@@ -214,8 +214,3 @@ node server.js
 
 Proyecto en desarrollo con funcionalidades base implementadas.
 
----
-
-## Licencia
-
-ISC
