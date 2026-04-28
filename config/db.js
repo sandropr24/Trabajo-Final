@@ -1,9 +1,6 @@
-const mysql = require('mysql2/promise'); //Acceso BD - MYSQL
-require('dotenv').config(); //Leer los valores del archivo de configuracion 
+const mysql = require('mysql2/promise'); 
+require('dotenv').config(); 
 
-//pool de conexiones => "conjunto de conexiones disponibles"
-//conexion "regular" (normal) => usuario 1 => abre > proceso > cierra
-//pool "optimizado" => se crear todas las conexiones a ofrecer(10) => usuario1, usuario2, etc , usuario11(cola)
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
