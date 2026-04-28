@@ -1,0 +1,114 @@
+<section>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Préstamos</h1>
+      <p class="page-subtitle" id="totalPrestamosLabel">
+        0 préstamo(s) encontrado(s)
+      </p>
+    </div>
+
+    <button class="btn-primary-action" id="btnNuevoPrestamo">
+      <i class="bi bi-plus-lg"></i>
+      Nuevo préstamo
+    </button>
+  </div>
+
+  <div class="search-bar-row">
+    <div class="search-input-wrap">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        id="searchPrestamo"
+        placeholder="Buscar préstamo..."
+      />
+    </div>
+
+    <button class="btn-icon-outline" id="btnRefreshPrestamos">
+      <i class="bi bi-arrow-clockwise"></i>
+    </button>
+  </div>
+
+  <div class="card-panel">
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Usuario</th>
+          <th>Fecha préstamo</th>
+          <th>Fecha devolución</th>
+          <th>Entregado por</th>
+          <th>Recibido por</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody id="bodyPrestamos"></tbody>
+    </table>
+  </div>
+</section>
+
+<div class="modal-overlay" id="modalPrestamoOverlay">
+  <div class="modal-panel">
+    <div class="modal-header-custom">
+      <div>
+        <div class="modal-title-custom">Nuevo Préstamo</div>
+        <div class="modal-subtitle">Completa los datos del préstamo</div>
+      </div>
+
+      <button id="btnCloseModalPrestamo" class="btn-modal-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-custom">
+      <label class="form-label-custom">
+        Usuario <span class="required">*</span>
+      </label>
+      <select id="pUsuario" class="input-custom">
+        <option value="">Seleccione usuario</option>
+      </select>
+
+      <label class="form-label-custom">
+        Entregado por
+      </label>
+      <select id="pEntregadoPor" class="input-custom">
+        <option value="">Seleccione encargado</option>
+      </select>
+
+      <label class="form-label-custom">
+        Recibido por
+      </label>
+      <select id="pRecibidoPor" class="input-custom">
+        <option value="">Seleccione encargado</option>
+      </select>
+
+      <label class="form-label-custom">
+        Herramienta <span class="required">*</span>
+      </label>
+      <select id="pHerramienta" class="input-custom">
+        <option value="">Seleccione herramienta</option>
+      </select>
+
+      <label class="form-label-custom">
+        Cantidad <span class="required">*</span>
+      </label>
+      <input type="number" id="pCantidad" class="input-custom" min="1" value="1" />
+
+      <label class="form-label-custom">
+        Estado físico
+      </label>
+      <input type="text" id="pEstadoFisico" class="input-custom" value="Buen estado" />
+    </div>
+
+    <div class="modal-footer-custom">
+      <button id="btnCancelPrestamo" class="btn-cancel">
+        Cancelar
+      </button>
+
+      <button id="btnSavePrestamo" class="btn-save">
+        Guardar
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,132 @@
+<section>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Herramientas</h1>
+      <p class="page-subtitle" id="totalHerramientasLabel">
+        0 herramienta(s) encontrada(s)
+      </p>
+    </div>
+
+    <button class="btn-primary-action" id="btnNuevaHerramienta">
+      <i class="bi bi-plus-lg"></i>
+      Nueva herramienta
+    </button>
+  </div>
+
+  <div class="search-bar-row">
+    <div class="search-input-wrap">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        id="searchHerramienta"
+        placeholder="Buscar por nombre o serie..."
+      />
+    </div>
+
+    <button class="btn-icon-outline" id="btnRefreshHerramientas">
+      <i class="bi bi-arrow-clockwise"></i>
+    </button>
+  </div>
+
+  <div class="card-panel">
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Serie</th>
+          <th>Stock</th>
+          <th>Categoría</th>
+          <th>Estado</th>
+          <th>Status</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody id="bodyHerramientas"></tbody>
+    </table>
+  </div>
+</section>
+
+<div class="modal-overlay" id="modalHerramientaOverlay">
+  <div class="modal-panel">
+    <div class="modal-header-custom">
+      <div>
+        <div class="modal-title-custom" id="modalHerramientaTitle">
+          Nueva Herramienta
+        </div>
+        <div class="modal-subtitle">
+          Completa los datos de la herramienta
+        </div>
+      </div>
+
+      <button id="btnCloseModalHerramienta" class="btn-modal-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-custom">
+      <input type="hidden" id="herramientaId" />
+
+      <label class="form-label-custom">
+        Nombre <span class="required">*</span>
+      </label>
+      <input type="text" id="hNombre" class="input-custom" />
+      <div id="err-hNombre" class="field-error"></div>
+
+      <label class="form-label-custom">
+        Serie <span class="required">*</span>
+      </label>
+      <input type="text" id="hSerie" class="input-custom" />
+      <div id="err-hSerie" class="field-error"></div>
+
+      <label class="form-label-custom">
+        Stock <span class="required">*</span>
+      </label>
+      <input type="number" id="hStock" class="input-custom" min="0" />
+      <div id="err-hStock" class="field-error"></div>
+
+      <label class="form-label-custom">
+        Categoría <span class="required">*</span>
+      </label>
+      <select id="hCategoria" class="input-custom">
+        <option value="">Seleccione categoría</option>
+        <option value="1">Manual</option>
+        <option value="2">Eléctrica</option>
+      </select>
+      <div id="err-hCategoria" class="field-error"></div>
+
+      <label class="form-label-custom">
+        Estado <span class="required">*</span>
+      </label>
+      <select id="hEstado" class="input-custom">
+        <option value="">Seleccione estado</option>
+        <option value="1">Bueno</option>
+        <option value="2">Dañado</option>
+      </select>
+      <div id="err-hEstado" class="field-error"></div>
+
+      <label class="form-label-custom">
+        Status <span class="required">*</span>
+      </label>
+      <select id="hStatus" class="input-custom">
+        <option value="">Seleccione status</option>
+        <option value="1">Disponible</option>
+        <option value="2">Prestado</option>
+      </select>
+      <div id="err-hStatus" class="field-error"></div>
+    </div>
+
+    <div class="modal-footer-custom">
+      <button id="btnCancelHerramienta" class="btn-cancel">
+        Cancelar
+      </button>
+
+      <button id="btnSaveHerramienta" class="btn-save">
+        <span id="btnSaveHerramientaText">Guardar</span>
+        <span id="btnSaveHerramientaSpinner" class="spinner-sm d-none"></span>
+      </button>
+    </div>
+  </div>
+</div>

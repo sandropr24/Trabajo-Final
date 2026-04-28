@@ -1,0 +1,61 @@
+<section>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Resumen general del sistema de herramientas</p>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="--c:#6366f1">
+        <i class="bi bi-tools"></i>
+      </div>
+      <div class="stat-value" id="totalHerramientas">0</div>
+      <div class="stat-label">Herramientas registradas</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="--c:#10b981">
+        <i class="bi bi-check-circle"></i>
+      </div>
+      <div class="stat-value" id="totalDisponibles">0</div>
+      <div class="stat-label">Disponibles</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="--c:#f59e0b">
+        <i class="bi bi-arrow-left-right"></i>
+      </div>
+      <div class="stat-value" id="totalPrestadas">0</div>
+      <div class="stat-label">Prestadas</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="--c:#ef4444">
+        <i class="bi bi-people"></i>
+      </div>
+      <div class="stat-value" id="totalUsuarios">0</div>
+      <div class="stat-label">Usuarios registrados</div>
+    </div>
+  </div>
+
+  <div class="card-panel">
+    <div class="panel-header">
+      <div class="panel-title">Herramientas recientes</div>
+    </div>
+
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th>Herramienta</th>
+          <th>Serie</th>
+          <th>Categoría</th>
+          <th>Estado</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="dashboardHerramientasRecientes"></tbody>
+    </table>
+  </div>
+</section>
