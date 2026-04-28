@@ -1,59 +1,42 @@
-function renderDashboard() {
-  const container = document.getElementById("pageContainer");
+'use strict';
 
-  container.innerHTML = `
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">Dashboard</h1>
-        <p class="page-subtitle">Resumen general del sistema de préstamo de herramientas</p>
-      </div>
-    </div>
+const DashboardModule = {
+  async init() {
+    await this.load();
+  },
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon" style="--c:#6366f1">
-          <i class="bi bi-tools"></i>
-        </div>
-        <div class="stat-value">5</div>
-        <div class="stat-label">Herramientas registradas</div>
-      </div>
+  async load() {
+    try {
+      const { data } = await http("/api/herramientas");
 
-      <div class="stat-card">
-        <div class="stat-icon" style="--c:#10b981">
-          <i class="bi bi-check-circle"></i>
-        </div>
-        <div class="stat-value">4</div>
-        <div class="stat-label">Disponibles</div>
-      </div>
+      document.getElementById("totalHerramientas").textContent = data.length;
 
-      <div class="stat-card">
-        <div class="stat-icon" style="--c:#f59e0b">
-          <i class="bi bi-arrow-left-right"></i>
-        </div>
-        <div class="stat-value">5</div>
-        <div class="stat-label">Préstamos realizados</div>
-      </div>
+      document.getElementById("totalDisponibles").textContent =
+        data.filter(h => h.nombre_status === "Disponible").length;
 
-      <div class="stat-card">
-        <div class="stat-icon" style="--c:#ef4444">
-          <i class="bi bi-people"></i>
-        </div>
-        <div class="stat-value">5</div>
-        <div class="stat-label">Usuarios registrados</div>
-      </div>
-    </div>
+      document.getElementById("totalPrestadas").textContent =
+        data.filter(h => h.nombre_status === "Prestado").length;
 
-    <div class="card-panel">
-      <div class="panel-header">
-        <div class="panel-title">Avance del sistema</div>
-      </div>
+      document.getElementById("totalUsuarios").textContent = AppState.usuarios?.length || 0;
 
-      <div class="modal-body-custom">
-        <p><strong>Backend:</strong> Node.js + Express funcionando.</p>
-        <p><strong>Base de datos:</strong> MySQL conectada correctamente.</p>
-        <p><strong>Módulos:</strong> usuarios, herramientas, préstamos y autenticación.</p>
-        <p><strong>Estado:</strong> sistema en desarrollo con pruebas desde Thunder Client.</p>
-      </div>
-    </div>
-  `;
-}
+      this.renderRecientes(data.slice(0, 5));
+
+    } catch (error) {
+      console.error("Error dashboard:", error);
+    }
+  },
+
+  renderRecientes(lista) {
+    const tbody = document.getElementById("dashboardHerramientasRecientes");
+
+    tbody.innerHTML = lista.map(h => `
+      <tr>
+        <td class="fw-600">${escapeHtml(h.nombre)}</td>
+        <td>${escapeHtml(h.serie)}</td>
+        <td>${escapeHtml(h.nombre_categoria)}</td>
+        <td>${escapeHtml(h.nombre_estado)}</td>
+        <td>${escapeHtml(h.nombre_status)}</td>
+      </tr>
+    `).join("");
+  }
+};
