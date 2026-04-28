@@ -1007,3 +1007,14 @@ a { text-decoration: none; color: inherit; }
   font-size: 13px;
   text-align: center;
 }
+
+.modal-panel {
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body-custom {
+  overflow-y: auto;
+  flex: 1;
+}
