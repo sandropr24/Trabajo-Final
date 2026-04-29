@@ -23,6 +23,6 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     }
 
   } catch (error) {
-    document.getElementById("errorMsg").innerText = "Error de conexión";
+    document.getElementById("errorMsg").innerText = "Error de conexión ";
   }
 });
