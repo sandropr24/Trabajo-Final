@@ -35,6 +35,13 @@
 
       <div class="nav-section-label">Gestión</div>
 
+      <a href="#" class="nav-item" data-page="marcas" data-role="Administrador,Almacenero,Supervisor">
+        <i class="bi bi-tools"></i>
+        <span>Marcas</span>
+        <span class="nav-badge" id="badge-marcas">0</span>
+      </a>
+
+
       <a href="#" class="nav-item" data-page="herramientas" data-role="Administrador,Almacenero,Supervisor">
         <i class="bi bi-tools"></i>
         <span>Herramientas</span>
@@ -88,13 +95,13 @@
     </header>
 
     <div class="page-wrapper" id="pageContainer">
-      <!-- Aquí se cargan las vistas sin recargar la página -->
     </div>
   </main>
 
   <script src="js/utils.js"></script>
   <script src="js/app.js"></script>
   <script src="js/modules/dashboard.js"></script>
+  <script src="js/modules/marcas.js"></script>
   <script src="js/modules/herramientas.js"></script>
   <script src="js/modules/usuarios.js"></script>
   <script src="js/modules/prestamos.js"></script>
