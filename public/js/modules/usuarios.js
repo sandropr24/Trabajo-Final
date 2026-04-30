@@ -11,7 +11,7 @@ const UsuariosModule = {
 
     tbody.innerHTML = `
       <tr>
-        <td colspan="7" class="text-center py-5">
+        <td colspan="8" class="text-center py-5">
           <div class="spinner-custom"></div>
         </td>
       </tr>
@@ -56,6 +56,7 @@ const UsuariosModule = {
         <td>${escapeHtml(u.turno || "")}</td>
         <td>${escapeHtml(u.estado || "")}</td>
         <td>${escapeHtml(u.correo || "")}</td>
+        <td>${escapeHtml(u.nombre_rol || u.rol || "")}</td>
         <td>
           <button class="btn-action btn-action-edit"
             onclick="UsuariosModule.openEdit(${u.id_usuario})"
