@@ -1,0 +1,90 @@
+<section>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Marcas</h1>
+      <p class="page-subtitle" id="totalMarcasLabel">
+        0 marca(s) registrada(s)
+      </p>
+    </div>
+
+    <button class="btn-primary-action" id="btnNuevaMarca">
+      <i class="bi bi-plus-lg"></i>
+      Nueva marca
+    </button>
+  </div>
+
+  <div class="search-bar-row">
+    <div class="search-input-wrap">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        id="searchMarca"
+        placeholder="Buscar por nombre..."
+      />
+    </div>
+
+    <button class="btn-icon-outline" id="btnRefreshMarcas">
+      <i class="bi bi-arrow-clockwise"></i>
+    </button>
+  </div>
+
+  <div class="card-panel">
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody id="bodyMarcas"></tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- MODAL MARCAS -->
+<div class="modal-overlay" id="modalMarcaOverlay">
+  <div class="modal-panel">
+
+    <div class="modal-header-custom">
+      <div>
+        <div class="modal-title-custom" id="modalMarcaTitle">
+          Nueva Marca
+        </div>
+        <div class="modal-subtitle">
+          Ingresa el nombre de la marca
+        </div>
+      </div>
+
+      <button id="btnCloseModalMarca" class="btn-modal-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-custom">
+      <input type="hidden" id="marcaId" />
+
+      <label class="form-label-custom">
+        Nombre <span class="required">*</span>
+      </label>
+
+      <input type="text" id="mNombre" class="input-custom" />
+      <div id="err-mNombre" class="field-error"></div>
+    </div>
+
+    <div class="modal-footer-custom">
+      <button id="btnCancelMarca" class="btn-cancel">
+        Cancelar
+      </button>
+
+      <button id="btnSaveMarca" class="btn-save">
+        <span id="btnSaveMarcaText">Guardar</span>
+        <span id="btnSaveMarcaSpinner" class="spinner-sm d-none"></span>
+      </button>
+    </div>
+
+  </div>
+</div>

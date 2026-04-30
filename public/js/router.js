@@ -24,6 +24,12 @@ const ROUTES = {
     view: "view/prestamos.html",
     module: () => PrestamosModule,
   },
+
+  marcas: {
+    title: "Marcas",
+    view: "view/marcas.html",
+    module: () => MarcasModule,
+  },
 };
 
 async function navigate(page) {

@@ -19,6 +19,8 @@ function setText(id, text) {
 function escapeHtml(value) {
   if (value === null || value === undefined) return "";
 
+
+  //Para evitar ataques como XSS (Cross-Site Scripting).
   return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")

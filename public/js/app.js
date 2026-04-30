@@ -1,6 +1,7 @@
 'use strict';
 
 const AppState = {
+  marcas: [],
   herramientas: [],
   prestamos: [],
   usuarios: [],
@@ -55,6 +56,7 @@ function updateBadges() {
   setText("badge-usuarios", AppState.usuarios.length);
   setText("badge-prestamos", AppState.prestamos.length);
   setText("badge-dashboard", AppState.herramientas.length);
+  setText("badge-marcas", AppState.marcas.length);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
