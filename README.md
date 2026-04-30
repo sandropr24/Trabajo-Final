@@ -3,7 +3,6 @@
 ## Descripción
 
 ToolControl es una aplicación web desarrollada para la gestión de herramientas, control de préstamos y administración de usuarios. El sistema permite registrar herramientas, gestionar su disponibilidad, controlar préstamos y visualizar información mediante un panel administrativo.
-
 El proyecto ha sido desarrollado como trabajo final académico, siguiendo una estructura modular que separa frontend, backend y base de datos.
 
 ---
@@ -26,69 +25,39 @@ Trabajo desarrollado de forma colaborativa.
 
 ---
 
-## Tecnologías utilizadas
-
-### Backend
-
-* Node.js
-* Express
-* MySQL (mysql2)
-* dotenv
-* cors
-* bcrypt
-* jsonwebtoken
-
-### Frontend
-
-* HTML5
-* CSS3 (estilos personalizados)
-* JavaScript modular
-* Bootstrap Icons
-
----
-
-## Estructura del proyecto
-
-```bash
-trabajofinal/
-│
-├── db.js
-├── server.js
-├── package.json
-│
-├── routes/
-│   ├── auth.js
-│   ├── usuarios.js
-│   ├── herramientas.js
-│   └── prestamos.js
-│
-├── public/
-│   ├── index.html
-│   ├── login.html
-│   ├── css/
-│   │   └── style.css
-│   └── js/
-│       ├── app.js
-│       ├── router.js
-│       ├── login.js
-│       └── modules/
-│           ├── dashboard.js
-│           └── herramientas.js
-│
-└── prestamo_db.sql
-```
-
----
-
 ## Requisitos
 
-* Node.js 
-* MySQL o MariaDB
+* Node.js
+* xampp
+* MySQL 
 * Navegador web 
 
 ---
 
 ## Instalación
+## (Pasos para poder crear el repositorio sin error de credenciales)
+
+Mofidicar el db.js 
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: "",
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 50,
+  timezone: "-05:00",
+}); 
+
+Modificar el .env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=prestamo_herramientas
+DB_PORT=3306
+### Backend
+
 
 ### 1. Clonar el repositorio
 
@@ -114,15 +83,10 @@ Crear un archivo `.env` en la raíz del proyecto:
 ```env
 DB_HOST=localhost
 DB_USER=root
-DB_PASSWORD=tu_password
+DB_PASSWORD=
 DB_NAME=prestamo_herramientas
 DB_PORT=3306
-
-JWT_SECRET=clave_secreta
-PORT=3000
 ```
-
----
 
 ### 4. Configuración de la base de datos
 
@@ -180,7 +144,6 @@ node server.js
 
 ## Consideraciones técnicas
 
-* Las contraseñas deben almacenarse utilizando cifrado (bcrypt)
 * Se recomienda implementar autenticación con JWT
 * Validar datos en backend para evitar errores y vulnerabilidades
 * Ajustar restricciones (constraints) en la base de datos
@@ -189,13 +152,8 @@ node server.js
 
 ## Mejoras pendientes
 
-* Implementación completa de autenticación con JWT
 * Protección de rutas privadas
-* CRUD completo de herramientas
-* Gestión de préstamos y devoluciones
-* Control automático de stock
-* Sistema de roles y permisos
-* Dashboard con datos dinámicos
+* CRUD completo de Usuarios
 * Manejo de errores estructurado
 
 ---
