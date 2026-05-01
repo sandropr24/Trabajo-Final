@@ -29,18 +29,18 @@
     </button>
   </div>
 
-  <div class="card-panel">
-    <table class="table-custom">
+  <div class="card-panel table-panel">
+    <table class="table-custom herramientas-table">
       <thead>
         <tr>
-          <th>#</th>
+          <th class="text-center">#</th>
           <th>Nombre</th>
-          <th>Serie</th>
-          <th>Stock</th>
+          <th class="text-center">Serie</th>
+          <th class="text-center">Stock</th>
           <th>Categoría</th>
-          <th>Estado</th>
-          <th>Status</th>
-          <th>Acciones</th>
+          <th class="text-center">Estado</th>
+          <th class="text-center">Status</th>
+          <th class="text-center">Acciones</th>
         </tr>
       </thead>
 
@@ -49,6 +49,7 @@
   </div>
 </section>
 
+<!-- MODAL -->
 <div class="modal-overlay" id="modalHerramientaOverlay">
   <div class="modal-panel">
     <div class="modal-header-custom">
@@ -125,7 +126,9 @@
 
       <button id="btnSaveHerramienta" class="btn-save">
         <span id="btnSaveHerramientaText">Guardar</span>
-        <span id="btnSaveHerramientaSpinner"  class ="d-none"><div class ="spinner-sm"></div></span>
+        <span id="btnSaveHerramientaSpinner" class="d-none">
+          <div class="spinner-sm"></div>
+        </span>
       </button>
     </div>
   </div>
