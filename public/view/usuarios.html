@@ -29,18 +29,18 @@
     </button>
   </div>
 
-  <div class="card-panel">
-    <table class="table-custom">
+  <div class="card-panel table-panel">
+    <table class="table-custom usuarios-table">
       <thead>
         <tr>
-          <th>#</th>
+          <th class="text-center">#</th>
           <th>Nombres completos</th>
-          <th>DNI</th>
-          <th>Turno</th>
-          <th>Estado</th>
+          <th class="text-center">DNI</th>
+          <th class="text-center">Turno</th>
+          <th class="text-center">Estado</th>
           <th>Correo</th>
-          <th>Rol</th>
-          <th>Acciones</th>
+          <th class="text-center">Rol</th>
+          <th class="text-center">Acciones</th>
         </tr>
       </thead>
 
@@ -56,9 +56,7 @@
         <div class="modal-title-custom" id="modalUsuarioTitle">
           Nuevo Usuario
         </div>
-        <div class="modal-subtitle">
-          Completa los datos del usuario
-        </div>
+        <div class="modal-subtitle">Completa los datos del usuario</div>
       </div>
 
       <button id="btnCloseModalUsuario" class="btn-modal-close">
@@ -102,35 +100,29 @@
       <div id="err-uEstado" class="field-error"></div>
 
       <label class="form-label-custom">
-  Rol <span class="required">*</span>
-</label>
-<select id="uRol" class="input-custom">
-  <option value="">Seleccione rol</option>
-  <option value="1">Administrador</option>
-  <option value="2">Almacenero</option>
-  <option value="3">Supervisor</option>
-  <option value="4">Técnico</option>
-  <option value="5">Invitado</option>
-</select>
-<div id="err-uRol" class="field-error"></div>
-
-      <label class="form-label-custom">
-        Correo
+        Rol <span class="required">*</span>
       </label>
+      <select id="uRol" class="input-custom">
+        <option value="">Seleccione rol</option>
+        <option value="1">Administrador</option>
+        <option value="2">Almacenero</option>
+        <option value="3">Supervisor</option>
+        <option value="4">Técnico</option>
+        <option value="5">Invitado</option>
+      </select>
+      <div id="err-uRol" class="field-error"></div>
+
+      <label class="form-label-custom"> Correo </label>
       <input type="email" id="uCorreo" class="input-custom" />
       <div id="err-uCorreo" class="field-error"></div>
 
-      <label class="form-label-custom">
-        Contraseña
-      </label>
+      <label class="form-label-custom"> Contraseña </label>
       <input type="password" id="uPassword" class="input-custom" />
       <div id="err-uPassword" class="field-error"></div>
     </div>
 
     <div class="modal-footer-custom">
-      <button id="btnCancelUsuario" class="btn-cancel">
-        Cancelar
-      </button>
+      <button id="btnCancelUsuario" class="btn-cancel">Cancelar</button>
 
       <button id="btnSaveUsuario" class="btn-save">
         <span id="btnSaveUsuarioText">Guardar</span>

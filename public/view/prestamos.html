@@ -29,17 +29,17 @@
     </button>
   </div>
 
-  <div class="card-panel">
-    <table class="table-custom">
+  <div class="card-panel table-panel">
+    <table class="table-custom prestamos-table">
       <thead>
         <tr>
-          <th>#</th>
+          <th class="text-center">#</th>
           <th>Usuario</th>
-          <th>Fecha préstamo</th>
-          <th>Fecha devolución</th>
+          <th class="text-center">Fecha préstamo</th>
+          <th class="text-center">Fecha devolución</th>
           <th>Entregado por</th>
           <th>Recibido por</th>
-          <th>Acciones</th>
+          <th class="text-center">Acciones</th>
         </tr>
       </thead>
 
@@ -48,6 +48,7 @@
   </div>
 </section>
 
+<!-- MODAL NUEVO PRÉSTAMO -->
 <div class="modal-overlay" id="modalPrestamoOverlay">
   <div class="modal-panel">
     <div class="modal-header-custom">
@@ -62,52 +63,60 @@
     </div>
 
     <div class="modal-body-custom">
-      <label class="form-label-custom">
-        Usuario <span class="required">*</span>
-      </label>
-      <select id="pUsuario" class="input-custom">
-        <option value="">Seleccione usuario</option>
-      </select>
+      <label class="form-label-custom">Usuario</label>
+      <select id="pUsuario" class="input-custom"></select>
 
-      <label class="form-label-custom">
-        Entregado por
-      </label>
-      <select id="pEntregadoPor" class="input-custom">
-        <option value="">Seleccione encargado</option>
-      </select>
+      <label class="form-label-custom">Herramienta</label>
+      <select id="pHerramienta" class="input-custom"></select>
 
-      <label class="form-label-custom">
-        Recibido por
-      </label>
-      <select id="pRecibidoPor" class="input-custom">
-        <option value="">Seleccione encargado</option>
-      </select>
+      <label class="form-label-custom">Cantidad</label>
+<input type="number" id="pCantidad" class="input-custom" min="1" />
 
-      <label class="form-label-custom">
-        Herramienta <span class="required">*</span>
-      </label>
-      <select id="pHerramienta" class="input-custom">
-        <option value="">Seleccione herramienta</option>
-      </select>
+<label class="form-label-custom">
+  Fecha devolución <span class="required">*</span>
+</label>
+<input type="date" id="pFechaDevolucion" class="input-custom" />
 
-      <label class="form-label-custom">
-        Cantidad <span class="required">*</span>
-      </label>
-      <input type="number" id="pCantidad" class="input-custom" min="1" value="1" />
+<label class="form-label-custom">Estado físico</label>
+<input type="text" id="pEstadoFisico" class="input-custom" />
 
-      <label class="form-label-custom">
-        Estado físico
-      </label>
-      <input type="text" id="pEstadoFisico" class="input-custom" value="Buen estado" />
+      <label class="form-label-custom">Entregado por</label>
+      <select id="pEntregadoPor" class="input-custom"></select>
+
+      <label class="form-label-custom">Recibido por</label>
+      <select id="pRecibidoPor" class="input-custom"></select>
     </div>
 
     <div class="modal-footer-custom">
-      <button id="btnCancelPrestamo" class="btn-cancel">
-        Cancelar
-      </button>
+      <button id="btnCancelPrestamo" class="btn-cancel">Cancelar</button>
+      <button id="btnSavePrestamo" class="btn-save">Guardar</button>
+    </div>
+  </div>
+</div>
 
-      <button id="btnSavePrestamo" class="btn-save">
-        Guardar
+<!-- MODAL DETALLE PRÉSTAMO -->
+<div class="modal-overlay" id="modalDetallePrestamoOverlay">
+  <div class="modal-panel">
+    <div class="modal-header-custom">
+      <div>
+        <div class="modal-title-custom" id="detallePrestamoTitle">
+          Detalle del préstamo
+        </div>
+        <div class="modal-subtitle">
+          Información completa del préstamo
+        </div>
+      </div>
+
+      <button id="btnCloseDetallePrestamo" class="btn-modal-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-custom" id="detallePrestamoBody"></div>
+
+    <div class="modal-footer-custom">
+      <button id="btnCerrarDetallePrestamo" class="btn-save">
+        Cerrar
       </button>
     </div>
   </div>

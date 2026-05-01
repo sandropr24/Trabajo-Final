@@ -35,6 +35,7 @@
         <tr>
           <th class="text-center">#</th>
           <th>Nombre</th>
+          <th>Marca</th>
           <th class="text-center">Serie</th>
           <th class="text-center">Stock</th>
           <th>Categoría</th>
@@ -49,7 +50,6 @@
   </div>
 </section>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modalHerramientaOverlay">
   <div class="modal-panel">
     <div class="modal-header-custom">
@@ -75,6 +75,14 @@
       </label>
       <input type="text" id="hNombre" class="input-custom" />
       <div id="err-hNombre" class="field-error"></div>
+
+      <label class="form-label-custom">
+        Marca <span class="required">*</span>
+      </label>
+      <select id="hMarca" class="input-custom">
+        <option value="">Seleccione marca</option>
+      </select>
+      <div id="err-hMarca" class="field-error"></div>
 
       <label class="form-label-custom">
         Serie <span class="required">*</span>
