@@ -30,49 +30,83 @@ const UsuariosModule = {
   },
 
   _render(lista) {
-    setText("totalUsuariosLabel", `${lista.length} usuario(s) encontrado(s)`);
+  setText("totalUsuariosLabel", `${lista.length} usuario(s) encontrado(s)`);
 
-    const tbody = document.getElementById("bodyUsuarios");
+  const tbody = document.getElementById("bodyUsuarios");
 
-    if (!lista.length) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="7">
-            <div class="empty-state">
-              <i class="bi bi-people"></i>
-              <p>No hay usuarios registrados</p>
-            </div>
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    tbody.innerHTML = lista.map((u, i) => `
+  if (!lista.length) {
+    tbody.innerHTML = `
       <tr>
-        <td>${String(i + 1).padStart(2, "0")}</td>
-        <td class="fw-600">${escapeHtml(u.nombres_completos || "")}</td>
-        <td>${escapeHtml(u.dni || "")}</td>
-        <td>${escapeHtml(u.turno || "")}</td>
-        <td>${escapeHtml(u.estado || "")}</td>
-        <td>${escapeHtml(u.correo || "")}</td>
-        <td>${escapeHtml(u.nombre_rol || u.rol || "")}</td>
-        <td>
-          <button class="btn-action btn-action-edit"
-            onclick="UsuariosModule.openEdit(${u.id_usuario})"
-            title="Editar">
-            <i class="bi bi-pencil-fill"></i>
-          </button>
-
-          <button class="btn-action btn-action-delete"
-            onclick="UsuariosModule.confirmDel(${u.id_usuario}, '${escapeHtml(u.nombres_completos || "")}')"
-            title="Eliminar">
-            <i class="bi bi-trash3-fill"></i>
-          </button>
+        <td colspan="8">
+          <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <p>No hay usuarios registrados</p>
+          </div>
         </td>
       </tr>
-    `).join("");
-  },
+    `;
+    return;
+  }
+
+  tbody.innerHTML = lista.map((u, i) => {
+
+    const estado = (u.estado || "").toLowerCase();
+    const turno = (u.turno || "").toLowerCase();
+    const rol = (u.nombre_rol || u.rol || "").toLowerCase();
+
+    return `
+      <tr>
+        <td>${String(i + 1).padStart(2, "0")}</td>
+
+        <td class="fw-600">${escapeHtml(u.nombres_completos || "")}</td>
+
+        <td>${escapeHtml(u.dni || "")}</td>
+
+        <!-- 🔥 TURNO BONITO -->
+        <td>
+          <span class="badge-turno">
+            ${escapeHtml(u.turno || "")}
+          </span>
+        </td>
+
+        <!-- 🔥 ESTADO CON COLOR -->
+        <td>
+          <span class="badge-user-estado ${
+            estado.includes("vigente") ? "badge-vigente" : "badge-baja"
+          }">
+            ${escapeHtml(u.estado || "")}
+          </span>
+        </td>
+
+        <td>${escapeHtml(u.correo || "")}</td>
+
+        <!-- 🔥 ROL BONITO -->
+        <td>
+          <span class="badge-user-rol">
+            ${escapeHtml(u.nombre_rol || u.rol || "")}
+          </span>
+        </td>
+
+        <!-- 🔥 ACCIONES CENTRADAS -->
+        <td>
+          <div class="acciones-table">
+            <button class="btn-action btn-action-edit"
+              onclick="UsuariosModule.openEdit(${u.id_usuario})"
+              title="Editar">
+              <i class="bi bi-pencil-fill"></i>
+            </button>
+
+            <button class="btn-action btn-action-delete"
+              onclick="UsuariosModule.confirmDel(${u.id_usuario}, '${escapeHtml(u.nombres_completos || "")}')"
+              title="Eliminar">
+              <i class="bi bi-trash3-fill"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+},
 
   _filter() {
     const search = document.getElementById("searchUsuario")?.value.toLowerCase() || "";

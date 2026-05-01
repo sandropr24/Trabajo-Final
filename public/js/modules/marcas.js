@@ -49,19 +49,27 @@ const MarcasModule = {
         (m, i) => `
     <tr>
       <td>${String(i + 1).padStart(2, "0")}</td>
-      <td class="fw-600">${escapeHtml(m.nombre_marca)}</td>
-      <td>
-        <button class="btn-action btn-action-edit"
-          onclick="MarcasModule.openEdit(${m.id_marca})"
-          title="Editar">
-          <i class="bi bi-pencil-fill"></i>
-        </button>
 
-        <button class="btn-action btn-action-delete"
-          onclick="MarcasModule.confirmDel(${m.id_marca}, '${escapeHtml(m.nombre_marca)}')"
-          title="Eliminar">
-          <i class="bi bi-trash3-fill"></i>
-        </button>
+      <td>
+        <span class="badge-marca-name">
+          ${escapeHtml(m.nombre_marca)}
+        </span>
+      </td>
+
+      <td>
+        <div class="acciones-table">
+          <button class="btn-action btn-action-edit"
+            onclick="MarcasModule.openEdit(${m.id_marca})"
+            title="Editar">
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+
+          <button class="btn-action btn-action-delete"
+            onclick="MarcasModule.confirmDel(${m.id_marca}, '${escapeHtml(m.nombre_marca)}')"
+            title="Eliminar">
+            <i class="bi bi-trash3-fill"></i>
+          </button>
+        </div>
       </td>
     </tr>
   `,
@@ -149,7 +157,7 @@ const MarcasModule = {
     const isEdit = !!id;
 
     const body = {
-      nombre_marca: document.getElementById("mNombre").value.trim(),
+      nombre: document.getElementById("mNombre").value.trim(),
     };
 
     setLoading("btnSaveMarca", "btnSaveMarcaText", "btnSaveMarcaSpinner", true);
@@ -165,6 +173,7 @@ const MarcasModule = {
         `Marca ${isEdit ? "actualizada" : "creada"} correctamente`,
         "success",
       );
+
       closeOverlay("modalMarcaOverlay");
       await this.load();
     } catch (e) {
