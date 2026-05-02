@@ -51,7 +51,7 @@ router.get("/:id", async (req, res) => {
       LEFT JOIN usuarios ur ON p.recibido_por = ur.id_usuario
       WHERE p.id_prestamo = ?
       `,
-      [req.params.id]
+      [req.params.id],
     );
 
     if (prestamo.length === 0) {
@@ -74,7 +74,7 @@ router.get("/:id", async (req, res) => {
       JOIN herramientas h ON dp.id_herramienta = h.id_herramienta
       WHERE dp.id_prestamo = ?
       `,
-      [req.params.id]
+      [req.params.id],
     );
 
     res.json({
@@ -95,7 +95,13 @@ router.get("/:id", async (req, res) => {
 
 // POST - Registrar préstamo
 router.post("/", async (req, res) => {
-  const { id_usuario, entregado_por, recibido_por, herramientas } = req.body;
+  const {
+    id_usuario,
+    fecha_devolucion,
+    entregado_por,
+    recibido_por,
+    herramientas,
+  } = req.body;
 
   if (!id_usuario) {
     return res.status(400).json({
@@ -104,7 +110,18 @@ router.post("/", async (req, res) => {
     });
   }
 
-  if (!herramientas || !Array.isArray(herramientas) || herramientas.length === 0) {
+  if (!fecha_devolucion) {
+    return res.status(400).json({
+      success: false,
+      message: "Debes seleccionar una fecha de devolución",
+    });
+  }
+
+  if (
+    !herramientas ||
+    !Array.isArray(herramientas) ||
+    herramientas.length === 0
+  ) {
     return res.status(400).json({
       success: false,
       message: "Debes seleccionar al menos una herramienta",
@@ -120,13 +137,14 @@ router.post("/", async (req, res) => {
       `
       INSERT INTO prestamo 
       (id_usuario, fecha_prestamo, fecha_devolucion, entregado_por, recibido_por)
-      VALUES (?, CURDATE(), CURDATE(), ?, ?)
+      VALUES (?, CURDATE(), ?, ?, ?)
       `,
       [
         id_usuario,
+        fecha_devolucion,
         entregado_por || null,
         recibido_por || null,
-      ]
+      ],
     );
 
     const id_prestamo = prestamo.insertId;
@@ -146,7 +164,7 @@ router.post("/", async (req, res) => {
         WHERE id_herramienta = ?
         FOR UPDATE
         `,
-        [id_herramienta]
+        [id_herramienta],
       );
 
       if (tool.length === 0) {
@@ -155,7 +173,7 @@ router.post("/", async (req, res) => {
 
       if (tool[0].stock < cantidad) {
         throw new Error(
-          `Stock insuficiente para "${tool[0].nombre}". Disponible: ${tool[0].stock}`
+          `Stock insuficiente para "${tool[0].nombre}". Disponible: ${tool[0].stock}`,
         );
       }
 
@@ -170,7 +188,7 @@ router.post("/", async (req, res) => {
           id_herramienta,
           cantidad,
           item.estado_fisico || "Buen estado",
-        ]
+        ],
       );
 
       await conn.query(
@@ -179,7 +197,7 @@ router.post("/", async (req, res) => {
         SET stock = stock - ? 
         WHERE id_herramienta = ?
         `,
-        [cantidad, id_herramienta]
+        [cantidad, id_herramienta],
       );
     }
 
@@ -206,7 +224,11 @@ router.post("/", async (req, res) => {
 router.put("/:id/devolver", async (req, res) => {
   const { recibido_por, herramientas } = req.body;
 
-  if (!herramientas || !Array.isArray(herramientas) || herramientas.length === 0) {
+  if (
+    !herramientas ||
+    !Array.isArray(herramientas) ||
+    herramientas.length === 0
+  ) {
     return res.status(400).json({
       success: false,
       message: "Debes enviar las herramientas a devolver",
@@ -220,7 +242,7 @@ router.put("/:id/devolver", async (req, res) => {
 
     const [prestamoExiste] = await conn.query(
       "SELECT id_prestamo FROM prestamo WHERE id_prestamo = ?",
-      [req.params.id]
+      [req.params.id],
     );
 
     if (prestamoExiste.length === 0) {
@@ -242,7 +264,7 @@ router.put("/:id/devolver", async (req, res) => {
         WHERE id_prestamo = ? AND id_herramienta = ?
         FOR UPDATE
         `,
-        [req.params.id, id_herramienta]
+        [req.params.id, id_herramienta],
       );
 
       if (detalle.length === 0) {
@@ -268,7 +290,7 @@ router.put("/:id/devolver", async (req, res) => {
         SET cantidad_devuelta = ?
         WHERE id_prestamo = ? AND id_herramienta = ?
         `,
-        [cantidadNuevaDevuelta, req.params.id, id_herramienta]
+        [cantidadNuevaDevuelta, req.params.id, id_herramienta],
       );
 
       if (diferencia > 0) {
@@ -278,7 +300,7 @@ router.put("/:id/devolver", async (req, res) => {
           SET stock = stock + ? 
           WHERE id_herramienta = ?
           `,
-          [diferencia, id_herramienta]
+          [diferencia, id_herramienta],
         );
       }
     }
@@ -290,7 +312,7 @@ router.put("/:id/devolver", async (req, res) => {
         SET recibido_por = ?
         WHERE id_prestamo = ?
         `,
-        [recibido_por, req.params.id]
+        [recibido_por, req.params.id],
       );
     }
 
@@ -299,6 +321,74 @@ router.put("/:id/devolver", async (req, res) => {
     res.json({
       success: true,
       message: "Devolución registrada correctamente",
+    });
+  } catch (err) {
+    await conn.rollback();
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  } finally {
+    conn.release();
+  }
+});
+
+// DELETE - Eliminar préstamo
+router.delete("/:id", async (req, res) => {
+  const conn = await db.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    const [detalle] = await conn.query(
+      `
+      SELECT id_herramienta, cantidad_prestada, cantidad_devuelta
+      FROM detalle_prestamo
+      WHERE id_prestamo = ?
+      FOR UPDATE
+      `,
+      [req.params.id],
+    );
+
+    const [prestamo] = await conn.query(
+      "SELECT id_prestamo FROM prestamo WHERE id_prestamo = ?",
+      [req.params.id],
+    );
+
+    if (prestamo.length === 0) {
+      throw new Error("Préstamo no encontrado");
+    }
+
+    for (const item of detalle) {
+      const pendiente =
+        Number(item.cantidad_prestada) - Number(item.cantidad_devuelta);
+
+      if (pendiente > 0) {
+        await conn.query(
+          `
+          UPDATE herramientas
+          SET stock = stock + ?
+          WHERE id_herramienta = ?
+          `,
+          [pendiente, item.id_herramienta],
+        );
+      }
+    }
+
+    await conn.query("DELETE FROM detalle_prestamo WHERE id_prestamo = ?", [
+      req.params.id,
+    ]);
+
+    await conn.query("DELETE FROM prestamo WHERE id_prestamo = ?", [
+      req.params.id,
+    ]);
+
+    await conn.commit();
+
+    res.json({
+      success: true,
+      message: "Préstamo eliminado correctamente",
     });
   } catch (err) {
     await conn.rollback();
