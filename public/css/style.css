@@ -1325,7 +1325,6 @@ a { text-decoration: none; color: inherit; }
   --surface-hover: #f8fafc;
 }
 
-/* ✨ 2. Transiciones más naturales */
 * {
   transition: background-color .2s ease,
               color .2s ease,
