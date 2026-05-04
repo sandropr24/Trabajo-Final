@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 
-// GET - Obtener todos los préstamos
 router.get("/", async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -12,11 +11,25 @@ router.get("/", async (req, res) => {
         p.fecha_prestamo,
         p.fecha_devolucion,
         ue.nombres_completos AS entregado_por,
-        ur.nombres_completos AS recibido_por
+        COALESCE(dp.total_prestado, 0) AS total_prestado,
+        COALESCE(dp.total_devuelto, 0) AS total_devuelto,
+        CASE
+          WHEN COALESCE(dp.total_prestado, 0) > 0
+           AND COALESCE(dp.total_prestado, 0) = COALESCE(dp.total_devuelto, 0)
+          THEN 1
+          ELSE 0
+        END AS devuelto
       FROM prestamo p
       JOIN usuarios u ON p.id_usuario = u.id_usuario
       LEFT JOIN usuarios ue ON p.entregado_por = ue.id_usuario
-      LEFT JOIN usuarios ur ON p.recibido_por = ur.id_usuario
+      LEFT JOIN (
+        SELECT 
+          id_prestamo,
+          SUM(cantidad_prestada) AS total_prestado,
+          SUM(cantidad_devuelta) AS total_devuelto
+        FROM detalle_prestamo
+        GROUP BY id_prestamo
+      ) dp ON p.id_prestamo = dp.id_prestamo
       ORDER BY p.id_prestamo DESC
     `);
 
@@ -30,7 +43,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET - Obtener préstamo por ID
 router.get("/:id", async (req, res) => {
   try {
     const [prestamo] = await db.query(
@@ -42,16 +54,13 @@ router.get("/:id", async (req, res) => {
         p.fecha_prestamo,
         p.fecha_devolucion,
         p.entregado_por,
-        ue.nombres_completos AS nombre_entregado_por,
-        p.recibido_por,
-        ur.nombres_completos AS nombre_recibido_por
+        ue.nombres_completos AS nombre_entregado_por
       FROM prestamo p
       JOIN usuarios u ON p.id_usuario = u.id_usuario
       LEFT JOIN usuarios ue ON p.entregado_por = ue.id_usuario
-      LEFT JOIN usuarios ur ON p.recibido_por = ur.id_usuario
       WHERE p.id_prestamo = ?
       `,
-      [req.params.id],
+      [req.params.id]
     );
 
     if (prestamo.length === 0) {
@@ -74,7 +83,7 @@ router.get("/:id", async (req, res) => {
       JOIN herramientas h ON dp.id_herramienta = h.id_herramienta
       WHERE dp.id_prestamo = ?
       `,
-      [req.params.id],
+      [req.params.id]
     );
 
     res.json({
@@ -93,15 +102,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST - Registrar préstamo
 router.post("/", async (req, res) => {
-  const {
-    id_usuario,
-    fecha_devolucion,
-    entregado_por,
-    recibido_por,
-    herramientas,
-  } = req.body;
+  const { id_usuario, fecha_devolucion, entregado_por, herramientas } = req.body;
 
   if (!id_usuario) {
     return res.status(400).json({
@@ -136,15 +138,10 @@ router.post("/", async (req, res) => {
     const [prestamo] = await conn.query(
       `
       INSERT INTO prestamo 
-      (id_usuario, fecha_prestamo, fecha_devolucion, entregado_por, recibido_por)
-      VALUES (?, CURDATE(), ?, ?, ?)
+      (id_usuario, fecha_prestamo, fecha_devolucion, entregado_por)
+      VALUES (?, CURDATE(), ?, ?)
       `,
-      [
-        id_usuario,
-        fecha_devolucion,
-        entregado_por || null,
-        recibido_por || null,
-      ],
+      [id_usuario, fecha_devolucion, entregado_por || null]
     );
 
     const id_prestamo = prestamo.insertId;
@@ -164,7 +161,7 @@ router.post("/", async (req, res) => {
         WHERE id_herramienta = ?
         FOR UPDATE
         `,
-        [id_herramienta],
+        [id_herramienta]
       );
 
       if (tool.length === 0) {
@@ -173,7 +170,7 @@ router.post("/", async (req, res) => {
 
       if (tool[0].stock < cantidad) {
         throw new Error(
-          `Stock insuficiente para "${tool[0].nombre}". Disponible: ${tool[0].stock}`,
+          `Stock insuficiente para "${tool[0].nombre}". Disponible: ${tool[0].stock}`
         );
       }
 
@@ -188,7 +185,7 @@ router.post("/", async (req, res) => {
           id_herramienta,
           cantidad,
           item.estado_fisico || "Buen estado",
-        ],
+        ]
       );
 
       await conn.query(
@@ -197,7 +194,7 @@ router.post("/", async (req, res) => {
         SET stock = stock - ? 
         WHERE id_herramienta = ?
         `,
-        [cantidad, id_herramienta],
+        [cantidad, id_herramienta]
       );
     }
 
@@ -220,7 +217,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT - Registrar devolución
 router.put("/:id/devolver", async (req, res) => {
   const { recibido_por, herramientas } = req.body;
 
@@ -242,7 +238,7 @@ router.put("/:id/devolver", async (req, res) => {
 
     const [prestamoExiste] = await conn.query(
       "SELECT id_prestamo FROM prestamo WHERE id_prestamo = ?",
-      [req.params.id],
+      [req.params.id]
     );
 
     if (prestamoExiste.length === 0) {
@@ -264,7 +260,7 @@ router.put("/:id/devolver", async (req, res) => {
         WHERE id_prestamo = ? AND id_herramienta = ?
         FOR UPDATE
         `,
-        [req.params.id, id_herramienta],
+        [req.params.id, id_herramienta]
       );
 
       if (detalle.length === 0) {
@@ -290,7 +286,7 @@ router.put("/:id/devolver", async (req, res) => {
         SET cantidad_devuelta = ?
         WHERE id_prestamo = ? AND id_herramienta = ?
         `,
-        [cantidadNuevaDevuelta, req.params.id, id_herramienta],
+        [cantidadNuevaDevuelta, req.params.id, id_herramienta]
       );
 
       if (diferencia > 0) {
@@ -300,7 +296,7 @@ router.put("/:id/devolver", async (req, res) => {
           SET stock = stock + ? 
           WHERE id_herramienta = ?
           `,
-          [diferencia, id_herramienta],
+          [diferencia, id_herramienta]
         );
       }
     }
@@ -312,7 +308,7 @@ router.put("/:id/devolver", async (req, res) => {
         SET recibido_por = ?
         WHERE id_prestamo = ?
         `,
-        [recibido_por, req.params.id],
+        [recibido_por, req.params.id]
       );
     }
 
@@ -334,7 +330,6 @@ router.put("/:id/devolver", async (req, res) => {
   }
 });
 
-// DELETE - Eliminar préstamo
 router.delete("/:id", async (req, res) => {
   const conn = await db.getConnection();
 
@@ -348,12 +343,12 @@ router.delete("/:id", async (req, res) => {
       WHERE id_prestamo = ?
       FOR UPDATE
       `,
-      [req.params.id],
+      [req.params.id]
     );
 
     const [prestamo] = await conn.query(
       "SELECT id_prestamo FROM prestamo WHERE id_prestamo = ?",
-      [req.params.id],
+      [req.params.id]
     );
 
     if (prestamo.length === 0) {
@@ -371,7 +366,7 @@ router.delete("/:id", async (req, res) => {
           SET stock = stock + ?
           WHERE id_herramienta = ?
           `,
-          [pendiente, item.id_herramienta],
+          [pendiente, item.id_herramienta]
         );
       }
     }

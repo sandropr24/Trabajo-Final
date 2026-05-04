@@ -28,6 +28,18 @@ const PrestamosModule = {
     await this.load();
   },
 
+  getEstado(p) {
+    if (Number(p.devuelto) === 1) {
+      return `<span class="badge-success">Devuelto</span>`;
+    }
+
+    if (isVencido(p.fecha_devolucion)) {
+      return `<span class="badge-danger">Vencido</span>`;
+    }
+
+    return `<span class="badge-warning">Pendiente</span>`;
+  },
+
   async load() {
     const tbody = document.getElementById("bodyPrestamos");
     if (!tbody) return;
@@ -71,6 +83,7 @@ const PrestamosModule = {
 
     tbody.innerHTML = lista.map((p, i) => {
       const vencido = isVencido(p.fecha_devolucion);
+      const devuelto = Number(p.devuelto) === 1;
 
       return `
         <tr>
@@ -85,15 +98,17 @@ const PrestamosModule = {
           </td>
 
           <td>
-            <span class="badge-fecha ${vencido ? "badge-vencido" : ""}">
+            <span class="badge-fecha ${vencido && !devuelto ? "badge-vencido" : ""}">
               ${formatDate(p.fecha_devolucion)}
             </span>
-            ${vencido ? '<span class="badge-vencido-text">Vencido</span>' : ""}
+            ${vencido && !devuelto ? '<span class="badge-vencido-text">Vencido</span>' : ""}
           </td>
 
           <td>${escapeHtml(p.entregado_por || "")}</td>
 
-          <td>${escapeHtml(p.recibido_por || "")}</td>
+          <td class="text-center">
+            ${this.getEstado(p)}
+          </td>
 
           <td>
             <div class="acciones-table">
@@ -101,6 +116,12 @@ const PrestamosModule = {
                 onclick="PrestamosModule.verDetalle(${p.id_prestamo})"
                 title="Ver detalle">
                 <i class="bi bi-eye-fill"></i>
+              </button>
+
+              <button class="btn-action btn-action-edit"
+                onclick="PrestamosModule.openDevolver(${p.id_prestamo})"
+                title="Registrar devolución">
+                <i class="bi bi-arrow-return-left"></i>
               </button>
 
               <button class="btn-action btn-action-delete"
@@ -129,11 +150,8 @@ const PrestamosModule = {
 
       manana.setDate(hoy.getDate() + 1);
 
-      const hoyFormato = hoy.toISOString().split("T")[0];
-      const mananaFormato = manana.toISOString().split("T")[0];
-
-      fechaInput.min = hoyFormato;
-      fechaInput.value = mananaFormato;
+      fechaInput.min = hoy.toISOString().split("T")[0];
+      fechaInput.value = manana.toISOString().split("T")[0];
     }
 
     openOverlay("modalPrestamoOverlay");
@@ -156,7 +174,6 @@ const PrestamosModule = {
 
       document.getElementById("pUsuario").innerHTML = usuariosOptions;
       document.getElementById("pEntregadoPor").innerHTML = usuariosOptions;
-      document.getElementById("pRecibidoPor").innerHTML = usuariosOptions;
 
       document.getElementById("pHerramienta").innerHTML = `
         <option value="">Seleccione herramienta</option>
@@ -174,36 +191,31 @@ const PrestamosModule = {
   async save() {
     const id_usuario = document.getElementById("pUsuario").value;
     const entregado_por = document.getElementById("pEntregadoPor").value;
-    const recibido_por = document.getElementById("pRecibidoPor").value;
     const id_herramienta = document.getElementById("pHerramienta").value;
     const cantidad = Number(document.getElementById("pCantidad").value);
     const estado_fisico = document.getElementById("pEstadoFisico").value.trim();
 
-    const fechaInput = document.getElementById("pFechaDevolucion");
-    let fecha_devolucion = fechaInput ? fechaInput.value : "";
+    const fecha_devolucion = document.getElementById("pFechaDevolucion")?.value || "";
 
     if (!fecha_devolucion) {
       await Swal.fire({
         title: "Fecha requerida",
-        text: "Selecciona una fecha de devolución para registrar el préstamo.",
+        text: "Selecciona una fecha de devolución",
         icon: "warning",
-        confirmButtonColor: "#6366f1",
-        background: "#1e293b",
-        color: "#fff"
+        confirmButtonColor: "#6366f1"
       });
       return;
     }
 
     if (!id_usuario) return showToast("Selecciona un usuario", "error");
     if (!id_herramienta) return showToast("Selecciona una herramienta", "error");
-    if (!cantidad || cantidad <= 0) return showToast("La cantidad debe ser mayor a 0", "error");
+    if (!cantidad || cantidad <= 0) return showToast("Cantidad inválida", "error");
 
     try {
       await http("/api/prestamos", "POST", {
         id_usuario,
         fecha_devolucion,
         entregado_por: entregado_por || null,
-        recibido_por: recibido_por || null,
         herramientas: [
           {
             id_herramienta,
@@ -217,7 +229,6 @@ const PrestamosModule = {
 
       closeOverlay("modalPrestamoOverlay");
       await this.load();
-
     } catch (e) {
       showToast(e.message, "error");
     }
@@ -228,33 +239,48 @@ const PrestamosModule = {
       const { data } = await http(`/api/prestamos/${id}`);
       const vencido = isVencido(data.fecha_devolucion);
 
+      const todoDevuelto = (data.detalle || []).every(d =>
+        Number(d.cantidad_prestada) === Number(d.cantidad_devuelta)
+      );
+
       setText("detallePrestamoTitle", `Préstamo #${data.id_prestamo}`);
 
-      const detalleHtml = (data.detalle || []).map(d => `
-        <div class="detalle-item">
-          <div class="detalle-item-title">
-            <i class="bi bi-tools"></i>
-            ${escapeHtml(d.nombre || "")}
+      const detalleHtml = (data.detalle || []).map(d => {
+        const prestada = Number(d.cantidad_prestada);
+        const devuelta = Number(d.cantidad_devuelta);
+        const pendiente = prestada - devuelta;
+
+        return `
+          <div class="detalle-item">
+            <div class="detalle-item-title">
+              <i class="bi bi-tools"></i>
+              ${escapeHtml(d.nombre || "")}
+            </div>
+
+            <div class="detalle-grid">
+              <div>
+                <span class="detalle-label">Cantidad prestada</span>
+                <strong>${prestada}</strong>
+              </div>
+
+              <div>
+                <span class="detalle-label">Cantidad devuelta</span>
+                <strong>${devuelta}</strong>
+              </div>
+
+              <div>
+                <span class="detalle-label">Pendiente</span>
+                <strong>${pendiente}</strong>
+              </div>
+
+              <div>
+                <span class="detalle-label">Estado físico</span>
+                <strong>${escapeHtml(d.estado_fisico || "")}</strong>
+              </div>
+            </div>
           </div>
-
-          <div class="detalle-grid">
-            <div>
-              <span class="detalle-label">Cantidad prestada</span>
-              <strong>${d.cantidad_prestada}</strong>
-            </div>
-
-            <div>
-              <span class="detalle-label">Cantidad devuelta</span>
-              <strong>${d.cantidad_devuelta}</strong>
-            </div>
-
-            <div>
-              <span class="detalle-label">Estado físico</span>
-              <strong>${escapeHtml(d.estado_fisico || "")}</strong>
-            </div>
-          </div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
 
       document.getElementById("detallePrestamoBody").innerHTML = `
         <div class="detalle-grid">
@@ -271,7 +297,7 @@ const PrestamosModule = {
           <div>
             <span class="detalle-label">Fecha devolución</span>
             <strong>${formatDate(data.fecha_devolucion)}</strong>
-            ${vencido ? '<span class="badge-vencido-text">Vencido</span>' : ""}
+            ${vencido && !todoDevuelto ? '<span class="badge-vencido-text">Vencido</span>' : ""}
           </div>
 
           <div>
@@ -280,8 +306,14 @@ const PrestamosModule = {
           </div>
 
           <div>
-            <span class="detalle-label">Recibido por</span>
-            <strong>${escapeHtml(data.nombre_recibido_por || "")}</strong>
+            <span class="detalle-label">Estado</span>
+            ${
+              todoDevuelto
+                ? '<strong class="badge-success">Devuelto</strong>'
+                : vencido
+                  ? '<strong class="badge-danger">Vencido</strong>'
+                  : '<strong class="badge-warning">Pendiente</strong>'
+            }
           </div>
         </div>
 
@@ -291,24 +323,129 @@ const PrestamosModule = {
       `;
 
       openOverlay("modalDetallePrestamoOverlay");
-
     } catch (error) {
       showToast("Error al cargar detalle: " + error.message, "error");
+    }
+  },
+
+  async openDevolver(id) {
+    try {
+      const { data } = await http(`/api/prestamos/${id}`);
+
+      const todoDevuelto = (data.detalle || []).every(d =>
+        Number(d.cantidad_prestada) === Number(d.cantidad_devuelta)
+      );
+
+      if (todoDevuelto) {
+        return showToast("Este préstamo ya fue devuelto completamente", "warning");
+      }
+
+      document.getElementById("devolverPrestamoId").value = id;
+      setText("devolverPrestamoTitle", `Registrar devolución #${id}`);
+
+      const { data: usuarios } = await http("/api/usuarios");
+
+      document.getElementById("dRecibidoPor").innerHTML = `
+        <option value="">Seleccione usuario</option>
+        ${usuarios.map(u => `
+          <option value="${u.id_usuario}">
+            ${escapeHtml(u.nombres_completos)}
+          </option>
+        `).join("")}
+      `;
+
+      document.getElementById("devolverHerramientasBody").innerHTML =
+        (data.detalle || []).map(d => {
+          const prestada = Number(d.cantidad_prestada);
+          const devuelta = Number(d.cantidad_devuelta);
+          const pendiente = prestada - devuelta;
+
+          return `
+            <div class="detalle-item">
+              <div class="detalle-item-title">
+                <i class="bi bi-tools"></i>
+                ${escapeHtml(d.nombre || "")}
+              </div>
+
+              <div class="detalle-grid">
+                <div>
+                  <span class="detalle-label">Prestado</span>
+                  <strong>${prestada}</strong>
+                </div>
+
+                <div>
+                  <span class="detalle-label">Ya devuelto</span>
+                  <strong>${devuelta}</strong>
+                </div>
+
+                <div>
+                  <span class="detalle-label">Pendiente</span>
+                  <strong>${pendiente}</strong>
+                </div>
+              </div>
+
+              <label class="form-label-custom">Cantidad total devuelta</label>
+              <input
+                type="number"
+                class="input-custom input-devolver"
+                data-id-herramienta="${d.id_herramienta}"
+                min="${devuelta}"
+                max="${prestada}"
+                value="${prestada}"
+                ${pendiente === 0 ? "disabled" : ""}
+              />
+            </div>
+          `;
+        }).join("");
+
+      openOverlay("modalDevolverPrestamoOverlay");
+    } catch (error) {
+      showToast("Error al abrir devolución: " + error.message, "error");
+    }
+  },
+
+  async saveDevolucion() {
+    const id = document.getElementById("devolverPrestamoId").value;
+    const recibido_por = document.getElementById("dRecibidoPor").value;
+
+    if (!recibido_por) {
+      return showToast("Selecciona quién recibió la devolución", "error");
+    }
+
+    const herramientas = [...document.querySelectorAll(".input-devolver")]
+      .filter(input => !input.disabled)
+      .map(input => ({
+        id_herramienta: input.dataset.idHerramienta,
+        cantidad_devuelta: Number(input.value)
+      }));
+
+    if (!herramientas.length) {
+      return showToast("No hay herramientas pendientes por devolver", "warning");
+    }
+
+    try {
+      await http(`/api/prestamos/${id}/devolver`, "PUT", {
+        recibido_por,
+        herramientas
+      });
+
+      showToast("Devolución registrada correctamente", "success");
+
+      closeOverlay("modalDevolverPrestamoOverlay");
+      await this.load();
+    } catch (error) {
+      showToast(error.message, "error");
     }
   },
 
   async confirmDel(id) {
     const result = await Swal.fire({
       title: "¿Eliminar préstamo?",
-      text: "Si el préstamo tiene herramientas pendientes, el stock será devuelto.",
+      text: "El stock será devuelto automáticamente",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#6366f1",
-      cancelButtonColor: "#64748b",
-      background: "#1e293b",
-      color: "#fff",
+      cancelButtonText: "Cancelar"
     });
 
     if (!result.isConfirmed) return;
@@ -329,7 +466,7 @@ const PrestamosModule = {
     const filtrados = AppState.prestamos.filter(p =>
       String(p.usuario || "").toLowerCase().includes(search) ||
       String(p.entregado_por || "").toLowerCase().includes(search) ||
-      String(p.recibido_por || "").toLowerCase().includes(search)
+      String(p.devuelto ? "devuelto" : "").toLowerCase().includes(search)
     );
 
     this._render(filtrados);
@@ -360,6 +497,15 @@ const PrestamosModule = {
     document.getElementById("btnCerrarDetallePrestamo")
       ?.addEventListener("click", () => closeOverlay("modalDetallePrestamoOverlay"));
 
+    document.getElementById("btnSaveDevolverPrestamo")
+      ?.addEventListener("click", () => this.saveDevolucion());
+
+    document.getElementById("btnCancelDevolverPrestamo")
+      ?.addEventListener("click", () => closeOverlay("modalDevolverPrestamoOverlay"));
+
+    document.getElementById("btnCloseDevolverPrestamo")
+      ?.addEventListener("click", () => closeOverlay("modalDevolverPrestamoOverlay"));
+
     document.getElementById("modalPrestamoOverlay")
       ?.addEventListener("click", e => {
         if (e.target.id === "modalPrestamoOverlay") {
@@ -371,6 +517,13 @@ const PrestamosModule = {
       ?.addEventListener("click", e => {
         if (e.target.id === "modalDetallePrestamoOverlay") {
           closeOverlay("modalDetallePrestamoOverlay");
+        }
+      });
+
+    document.getElementById("modalDevolverPrestamoOverlay")
+      ?.addEventListener("click", e => {
+        if (e.target.id === "modalDevolverPrestamoOverlay") {
+          closeOverlay("modalDevolverPrestamoOverlay");
         }
       });
   }

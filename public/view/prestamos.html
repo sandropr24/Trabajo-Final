@@ -34,11 +34,11 @@
       <thead>
         <tr>
           <th class="text-center">#</th>
-          <th>Usuario</th>
+          <th>Usuario solicitante</th>
           <th class="text-center">Fecha préstamo</th>
           <th class="text-center">Fecha devolución</th>
           <th>Entregado por</th>
-          <th>Recibido por</th>
+          <th class="text-center">Estado</th>
           <th class="text-center">Acciones</th>
         </tr>
       </thead>
@@ -48,7 +48,6 @@
   </div>
 </section>
 
-<!-- MODAL NUEVO PRÉSTAMO -->
 <div class="modal-overlay" id="modalPrestamoOverlay">
   <div class="modal-panel">
     <div class="modal-header-custom">
@@ -63,28 +62,35 @@
     </div>
 
     <div class="modal-body-custom">
-      <label class="form-label-custom">Usuario</label>
+      <label class="form-label-custom">Usuario solicitante</label>
       <select id="pUsuario" class="input-custom"></select>
 
       <label class="form-label-custom">Herramienta</label>
       <select id="pHerramienta" class="input-custom"></select>
 
       <label class="form-label-custom">Cantidad</label>
-<input type="number" id="pCantidad" class="input-custom" min="1" />
+      <input
+        type="number"
+        id="pCantidad"
+        class="input-custom"
+        min="1"
+        value="1"
+      />
 
-<label class="form-label-custom">
-  Fecha devolución <span class="required">*</span>
-</label>
-<input type="date" id="pFechaDevolucion" class="input-custom" />
+      <label class="form-label-custom">
+        Fecha devolución <span class="required">*</span>
+      </label>
+      <input type="date" id="pFechaDevolucion" class="input-custom" />
 
-<label class="form-label-custom">Estado físico</label>
-<input type="text" id="pEstadoFisico" class="input-custom" />
+      <label class="form-label-custom">Estado físico</label>
+      <select id="pEstadoFisico" class="input-custom">
+        <option value="Buen estado">Buen estado</option>
+        <option value="Regular">Regular</option>
+        <option value="Dañado">Dañado</option>
+      </select>
 
       <label class="form-label-custom">Entregado por</label>
       <select id="pEntregadoPor" class="input-custom"></select>
-
-      <label class="form-label-custom">Recibido por</label>
-      <select id="pRecibidoPor" class="input-custom"></select>
     </div>
 
     <div class="modal-footer-custom">
@@ -94,7 +100,6 @@
   </div>
 </div>
 
-<!-- MODAL DETALLE PRÉSTAMO -->
 <div class="modal-overlay" id="modalDetallePrestamoOverlay">
   <div class="modal-panel">
     <div class="modal-header-custom">
@@ -102,9 +107,7 @@
         <div class="modal-title-custom" id="detallePrestamoTitle">
           Detalle del préstamo
         </div>
-        <div class="modal-subtitle">
-          Información completa del préstamo
-        </div>
+        <div class="modal-subtitle">Información completa del préstamo</div>
       </div>
 
       <button id="btnCloseDetallePrestamo" class="btn-modal-close">
@@ -115,8 +118,39 @@
     <div class="modal-body-custom" id="detallePrestamoBody"></div>
 
     <div class="modal-footer-custom">
-      <button id="btnCerrarDetallePrestamo" class="btn-save">
-        Cerrar
+      <button id="btnCerrarDetallePrestamo" class="btn-save">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalDevolverPrestamoOverlay">
+  <div class="modal-panel">
+    <div class="modal-header-custom">
+      <div>
+        <div class="modal-title-custom" id="devolverPrestamoTitle">
+          Registrar devolución
+        </div>
+        <div class="modal-subtitle">Registra las herramientas devueltas</div>
+      </div>
+
+      <button id="btnCloseDevolverPrestamo" class="btn-modal-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-custom">
+      <input type="hidden" id="devolverPrestamoId" />
+
+      <label class="form-label-custom">Recibido por</label>
+      <select id="dRecibidoPor" class="input-custom"></select>
+
+      <div id="devolverHerramientasBody"></div>
+    </div>
+
+    <div class="modal-footer-custom">
+      <button id="btnCancelDevolverPrestamo" class="btn-cancel">Cancelar</button>
+      <button id="btnSaveDevolverPrestamo" class="btn-save">
+        Guardar devolución
       </button>
     </div>
   </div>
