@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
+const bcrypt = require("bcrypt");
 
 router.post("/login", async (req, res) => {
   try {
@@ -14,8 +15,7 @@ router.post("/login", async (req, res) => {
     }
 
     const [rows] = await db.query(
-      `
-      SELECT 
+      `SELECT 
         u.id_usuario,
         u.nombres_completos,
         u.correo,
@@ -24,8 +24,7 @@ router.post("/login", async (req, res) => {
       FROM usuarios u
       INNER JOIN usuario_rol ur ON u.id_usuario = ur.id_usuario
       INNER JOIN roles r ON ur.id_rol = r.id_rol
-      WHERE u.correo = ?
-      `,
+      WHERE u.correo = ?`,
       [correo]
     );
 
@@ -38,7 +37,8 @@ router.post("/login", async (req, res) => {
 
     const usuario = rows[0];
 
-    if (usuario.contraseña !== contraseña) {
+    const match = await bcrypt.compare(contraseña, usuario.contraseña);
+    if (!match) {
       return res.status(401).json({
         success: false,
         message: "Contraseña incorrecta",
