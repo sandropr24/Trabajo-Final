@@ -30,6 +30,18 @@ const ROUTES = {
     view: "view/marcas.html",
     module: () => MarcasModule,
   },
+
+  proveedores:{
+    title: "Proveedores",
+    view: "view/proveedores.html",
+    module: ()=> ProveedoresModule,
+  },
+
+  compras: {
+  title: "Compras",
+  view: "view/compras.html",
+  module: () => ComprasModule,
+  },
 };
 
 async function navigate(page) {
