@@ -1469,4 +1469,114 @@ a { text-decoration: none; color: inherit; }
     width: 100%;
     justify-content: center;
   }
-} 
+
+}
+
+/* ══════════════════════════════════════════
+   TABLAS PROVEEDORES Y COMPRAS
+══════════════════════════════════════════ */
+
+.proveedores-table,
+.compras-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.proveedores-table th,
+.proveedores-table td,
+.compras-table th,
+.compras-table td {
+  vertical-align: middle;
+}
+
+/* PROVEEDORES */
+.proveedores-table th:nth-child(1),
+.proveedores-table td:nth-child(1) {
+  width: 70px;
+  text-align: center;
+}
+
+.proveedores-table th:nth-child(2),
+.proveedores-table td:nth-child(2) {
+  width: 32%;
+  text-align: left;
+}
+
+.proveedores-table th:nth-child(3),
+.proveedores-table td:nth-child(3) {
+  width: 28%;
+  text-align: left;
+}
+
+.proveedores-table th:nth-child(4),
+.proveedores-table td:nth-child(4) {
+  width: 18%;
+  text-align: center;
+}
+
+.proveedores-table th:nth-child(5),
+.proveedores-table td:nth-child(5) {
+  width: 130px;
+  text-align: center;
+}
+
+/* COMPRAS */
+.compras-table th:nth-child(1),
+.compras-table td:nth-child(1) {
+  width: 70px;
+  text-align: center;
+}
+
+.compras-table th:nth-child(2),
+.compras-table td:nth-child(2) {
+  width: 26%;
+  text-align: left;
+}
+
+.compras-table th:nth-child(3),
+.compras-table td:nth-child(3) {
+  width: 24%;
+  text-align: left;
+}
+
+.compras-table th:nth-child(4),
+.compras-table td:nth-child(4) {
+  width: 16%;
+  text-align: center;
+}
+
+.compras-table th:nth-child(5),
+.compras-table td:nth-child(5) {
+  width: 16%;
+  text-align: center;
+}
+
+.compras-table th:nth-child(6),
+.compras-table td:nth-child(6) {
+  width: 120px;
+  text-align: center;
+}
+
+/* TOTAL COMPRA */
+.badge-total {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.proveedores-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.proveedores-table th,
+.proveedores-table td {
+  padding: 10px 12px;
+}
