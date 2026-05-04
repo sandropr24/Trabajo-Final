@@ -1,0 +1,113 @@
+<section>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Compras</h1>
+      <p class="page-subtitle" id="totalComprasLabel">
+        0 compra(s) encontrada(s)
+      </p>
+    </div>
+
+    <button class="btn-primary-action" id="btnNuevaCompra">
+      <i class="bi bi-plus-lg"></i>
+      Nueva compra
+    </button>
+  </div>
+
+  <div class="search-bar-row">
+    <div class="search-input-wrap">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        id="searchCompra"
+        placeholder="Buscar compra..."
+      />
+    </div>
+
+    <button class="btn-icon-outline" id="btnRefreshCompras">
+      <i class="bi bi-arrow-clockwise"></i>
+    </button>
+  </div>
+
+  <div class="card-panel table-panel">
+    <table class="table-custom compras-table">
+      <thead>
+        <tr>
+          <th class="text-center">#</th>
+          <th>Proveedor</th>
+          <th>Usuario</th>
+          <th class="text-center">Fecha</th>
+          <th class="text-center">Total</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody id="bodyCompras"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- MODAL COMPRA -->
+<div class="modal-overlay" id="modalCompraOverlay">
+  <div class="modal-panel">
+    <div class="modal-header-custom">
+      <div>
+        <div class="modal-title-custom">Nueva Compra</div>
+        <div class="modal-subtitle">Registrar compra</div>
+      </div>
+
+      <button id="btnCloseModalCompra" class="btn-modal-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-custom">
+      <label class="form-label-custom">Proveedor</label>
+      <select id="cProveedor" class="input-custom"></select>
+
+      <label class="form-label-custom">Usuario</label>
+      <select id="cUsuario" class="input-custom"></select>
+
+      <label class="form-label-custom">Fecha</label>
+      <input type="date" id="cFechaCompra" class="input-custom" />
+
+      <label class="form-label-custom">Herramienta</label>
+      <select id="cHerramienta" class="input-custom"></select>
+
+      <label class="form-label-custom">Cantidad</label>
+      <input type="number" id="cCantidad" class="input-custom" min="1" />
+
+      <label class="form-label-custom">Precio</label>
+      <input type="number" id="cPrecio" class="input-custom" min="0" step="0.01" />
+    </div>
+
+    <div class="modal-footer-custom">
+      <button id="btnCancelCompra" class="btn-cancel">Cancelar</button>
+      <button id="btnSaveCompra" class="btn-save">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE -->
+<div class="modal-overlay" id="modalDetalleCompraOverlay">
+  <div class="modal-panel">
+    <div class="modal-header-custom">
+      <div>
+        <div class="modal-title-custom" id="detalleCompraTitle">
+          Detalle compra
+        </div>
+        <div class="modal-subtitle">Información</div>
+      </div>
+
+      <button id="btnCloseDetalleCompra" class="btn-modal-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-custom" id="detalleCompraBody"></div>
+
+    <div class="modal-footer-custom">
+      <button id="btnCerrarDetalleCompra" class="btn-save">Cerrar</button>
+    </div>
+  </div>
+</div>
