@@ -20,7 +20,9 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/usuarios', require('./routes/usuarios'));
 app.use('/api/herramientas', require('./routes/herramientas'));
 app.use('/api/prestamos', require('./routes/prestamos'));
-app.use('/api/marcas', require('./routes/marcas')); // ✅ AGREGADO
+app.use('/api/marcas', require('./routes/marcas'));
+app.use('/api/proveedores', require('./routes/proveedores'));
+app.use('/api/compras', require('./routes/compras'));
 
 app.get('/api', (req, res) => {
   res.json({
@@ -45,7 +47,10 @@ app.listen(PORT, () => {
   console.log(`API Usuarios:      http://localhost:${PORT}/api/usuarios`);
   console.log(`API Herramientas:  http://localhost:${PORT}/api/herramientas`);
   console.log(`API Préstamos:     http://localhost:${PORT}/api/prestamos`);
-  console.log(`API Marcas:        http://localhost:${PORT}/api/marcas\n`); 
+  console.log(`API Marcas:        http://localhost:${PORT}/api/marcas`);
+  console.log(`API Proveedores:   http://localhost:${PORT}/api/proveedores`);
+  console.log(`API Compras:       http://localhost:${PORT}/api/compras\n`);
+   
 });
 
 module.exports = app;
