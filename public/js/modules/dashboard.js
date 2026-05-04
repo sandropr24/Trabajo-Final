@@ -7,22 +7,44 @@ const DashboardModule = {
 
   async load() {
     try {
-      const { data } = await http("/api/herramientas");
+      const { data: herramientas } = await http("/api/herramientas");
+      const { data: prestamos } = await http("/api/prestamos");
+      const { data: compras } = await http("/api/compras");
+      const { data: proveedores } = await http("/api/proveedores");
 
-      document.getElementById("totalHerramientas").textContent = data.length;
+      document.getElementById("totalHerramientas").textContent =
+        herramientas.length;
 
-      document.getElementById("totalDisponibles").textContent = data.filter(
-        (h) => h.nombre_status === "Disponible",
-      ).length;
+      document.getElementById("totalDisponibles").textContent =
+        herramientas.filter(h => h.nombre_status === "Disponible").length;
 
-      document.getElementById("totalPrestadas").textContent = data.filter(
-        (h) => h.nombre_status === "Prestado",
-      ).length;
+      document.getElementById("totalPrestadas").textContent =
+        herramientas.filter(h => h.nombre_status === "Prestado").length;
 
       document.getElementById("totalUsuarios").textContent =
         AppState.usuarios?.length || 0;
 
-      this.renderRecientes(data.slice(0, 5));
+      document.getElementById("totalProveedores").textContent =
+        proveedores.length;
+
+      document.getElementById("totalCompras").textContent =
+        compras.length;
+
+      const activos = prestamos.filter(p => !p.recibido_por);
+      document.getElementById("prestamosActivos").textContent = activos.length;
+
+      const hoy = new Date();
+
+      const vencidos = activos.filter(p => {
+        if (!p.fecha_devolucion) return false;
+        return new Date(p.fecha_devolucion) < hoy;
+      });
+
+      document.getElementById("prestamosVencidos").textContent =
+        vencidos.length;
+
+      this.renderRecientes(herramientas.slice(0, 5));
+
     } catch (error) {
       console.error("Error dashboard:", error);
     }
@@ -45,12 +67,11 @@ const DashboardModule = {
       return;
     }
 
-    tbody.innerHTML = lista
-      .map((h) => {
-        const estado = (h.nombre_estado || "").toLowerCase();
-        const status = (h.nombre_status || "").toLowerCase();
+    tbody.innerHTML = lista.map(h => {
+      const estado = (h.nombre_estado || "").toLowerCase();
+      const status = (h.nombre_status || "").toLowerCase();
 
-        return `
+      return `
         <tr>
           <td class="fw-600">${escapeHtml(h.nombre || "")}</td>
 
@@ -85,7 +106,6 @@ const DashboardModule = {
           </td>
         </tr>
       `;
-      })
-      .join("");
+    }).join("");
   },
 };
