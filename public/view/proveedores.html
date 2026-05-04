@@ -1,0 +1,88 @@
+<section>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Proveedores</h1>
+      <p class="page-subtitle" id="totalProveedoresLabel">
+        0 proveedor(es) encontrado(s)
+      </p>
+    </div>
+
+    <button class="btn-primary-action" id="btnNuevoProveedor">
+      <i class="bi bi-plus-lg"></i>
+      Nuevo proveedor
+    </button>
+  </div>
+
+  <div class="search-bar-row">
+    <div class="search-input-wrap">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        id="searchProveedor"
+        placeholder="Buscar proveedor..."
+      />
+    </div>
+
+    <button class="btn-icon-outline" id="btnRefreshProveedores">
+      <i class="bi bi-arrow-clockwise"></i>
+    </button>
+  </div>
+
+  <div class="card-panel table-panel">
+  <table class="table-custom proveedores-table">
+    <colgroup>
+      <col style="width: 70px" />
+      <col style="width: 32%" />
+      <col style="width: 28%" />
+      <col style="width: 18%" />
+      <col style="width: 130px" />
+    </colgroup>
+
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Proveedor</th>
+        <th>Contacto</th>
+        <th>Teléfono</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody id="bodyProveedores"></tbody>
+  </table>
+</div>
+</section>
+
+<div class="modal-overlay" id="modalProveedorOverlay">
+  <div class="modal-panel">
+    <div class="modal-header-custom">
+      <div>
+        <div class="modal-title-custom">Nuevo proveedor</div>
+        <div class="modal-subtitle">Registrar proveedor</div>
+      </div>
+
+      <button id="btnCloseModalProveedor" class="btn-modal-close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-custom">
+      <input type="hidden" id="proveedorId" />
+
+      <label class="form-label-custom">Nombre</label>
+      <input type="text" id="pNombre" class="input-custom" />
+
+      <label class="form-label-custom">Contacto</label>
+      <input type="text" id="pContacto" class="input-custom" />
+
+      <label class="form-label-custom">Teléfono</label>
+      <input type="text" id="pTelefono" class="input-custom" />
+    </div>
+
+    <div class="modal-footer-custom">
+      <button id="btnCancelProveedor" class="btn-cancel">Cancelar</button>
+      <button id="btnSaveProveedor" class="btn-save">Guardar</button>
+    </div>
+  </div>
+</div>
