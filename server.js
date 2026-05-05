@@ -23,6 +23,7 @@ app.use('/api/prestamos', require('./routes/prestamos'));
 app.use('/api/marcas', require('./routes/marcas'));
 app.use('/api/proveedores', require('./routes/proveedores'));
 app.use('/api/compras', require('./routes/compras'));
+app.use('/api/reportes', require('./routes/reportes'));
 
 app.get('/api', (req, res) => {
   res.json({
