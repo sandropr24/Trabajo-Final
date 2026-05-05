@@ -119,11 +119,11 @@ INSERT INTO roles (nombre_rol) VALUES
 ('Invitado');
 
 INSERT INTO usuarios (nombres_completos, dni, turno, estado, correo, contraseña) VALUES 
-('Sandro Pachas', '60807449', 'tarde', 'vigente', 'sandroromanipr24@gmail.com', '123'),
-('Maria Lopez', '87654321', 'tarde', 'vigente', 'maria@gmail.com', '123'),
-('Carlos Ramos', '11223344', 'noche', 'vigente', 'carlos@gmail.com', '123'),
-('Ana Torres', '55667788', 'mañana', 'baja', 'ana@gmail.com', '123'),
-('Luis Gomez', '99887766', 'tarde', 'vigente', 'luis@gmail.com', '123');
+('Sandro Pachas', '60807449', 'tarde', 'vigente', 'sandroromanipr24@gmail.com', '$2b$10$vUHgl6LLrD/PVttWb.WinuI7GXE/EdM1fAxynEofcYqJo5blIj/US'),
+('Maria Lopez', '87654321', 'tarde', 'vigente', 'maria@gmail.com', '$2b$10$gbXIwWfkkarGpwrV5nKDAuFQdnYYhXtRGu4nIeAVe0HJQGib./.su'),
+('Carlos Ramos', '11223344', 'noche', 'vigente', 'carlos@gmail.com', '$2b$10$tDKPcJUUOhL.hg.VQuiQlOldjklQ70PFbopna/DY5OPu3UJFUcdxa'),
+('Ana Torres', '55667788', 'mañana', 'baja', 'ana@gmail.com', '$2b$10$GIDDAM4BHY/sOuKnl5g3zeYXaGyAbG/7.G2xBeL81nj2jftzSfLse'),
+('Luis Gomez', '99887766', 'tarde', 'vigente', 'luis@gmail.com', '$2b$10$nErx66quczdQbGKZEgnn8Oz7kjvnXNJgTTCtp0Z42ESkscfxKrlg2');
 
 
 INSERT INTO usuario_rol (id_usuario, id_rol) VALUES 
@@ -226,5 +226,7 @@ SELECT
 FROM usuarios u
 LEFT JOIN usuario_rol ur ON u.id_usuario = ur.id_usuario
 LEFT JOIN roles r ON ur.id_rol = r.id_rol;
+
+
 
 
