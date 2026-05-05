@@ -1,6 +1,8 @@
 "use strict";
 
 const DashboardModule = {
+  charts: {},
+
   async init() {
     await this.load();
   },
@@ -12,37 +14,22 @@ const DashboardModule = {
       const { data: compras } = await http("/api/compras");
       const { data: proveedores } = await http("/api/proveedores");
 
-      document.getElementById("totalHerramientas").textContent =
-        herramientas.length;
-
-      document.getElementById("totalDisponibles").textContent =
-        herramientas.filter(h => h.nombre_status === "Disponible").length;
-
-      document.getElementById("totalPrestadas").textContent =
-        herramientas.filter(h => h.nombre_status === "Prestado").length;
-
-      document.getElementById("totalUsuarios").textContent =
-        AppState.usuarios?.length || 0;
-
-      document.getElementById("totalProveedores").textContent =
-        proveedores.length;
-
-      document.getElementById("totalCompras").textContent =
-        compras.length;
+      document.getElementById("totalHerramientas").textContent = herramientas.length;
+      document.getElementById("totalDisponibles").textContent = herramientas.filter(h => h.nombre_status === "Disponible").length;
+      document.getElementById("totalPrestadas").textContent = herramientas.filter(h => h.nombre_status === "Prestado").length;
+      document.getElementById("totalUsuarios").textContent = AppState.usuarios?.length || 0;
+      document.getElementById("totalProveedores").textContent = proveedores.length;
+      document.getElementById("totalCompras").textContent = compras.length;
 
       const activos = prestamos.filter(p => !p.recibido_por);
       document.getElementById("prestamosActivos").textContent = activos.length;
 
       const hoy = new Date();
+      const vencidos = activos.filter(p => p.fecha_devolucion && new Date(p.fecha_devolucion) < hoy);
+      document.getElementById("prestamosVencidos").textContent = vencidos.length;
 
-      const vencidos = activos.filter(p => {
-        if (!p.fecha_devolucion) return false;
-        return new Date(p.fecha_devolucion) < hoy;
-      });
-
-      document.getElementById("prestamosVencidos").textContent =
-        vencidos.length;
-
+      this.renderCharts(compras);
+      
       this.renderRecientes(herramientas.slice(0, 5));
 
     } catch (error) {
@@ -50,62 +37,86 @@ const DashboardModule = {
     }
   },
 
+  renderCharts(compras) {
+    const comprasPorEmpresa = {};
+
+    compras.forEach(c => {
+      const empresa = c.nombre_proveedor || c.proveedor || "Sin Nombre"; 
+      const monto = parseFloat(c.monto_total || c.total || 0);
+
+      if (!comprasPorEmpresa[empresa]) {
+        comprasPorEmpresa[empresa] = 0;
+      }
+      comprasPorEmpresa[empresa] += monto;
+    });
+
+    const etiquetas = Object.keys(comprasPorEmpresa);
+    const montos = Object.values(comprasPorEmpresa);
+
+    const el = document.getElementById("chartPrincipal");
+    if (!el) return;
+
+    const ctx = el.getContext('2d');
+    if (this.charts["principal"]) this.charts["principal"].destroy();
+
+    this.charts["principal"] = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: etiquetas,
+        datasets: [{
+          label: 'Total Invertido (S/)',
+          data: montos,
+          backgroundColor: '#6366f1',        
+             borderRadius: 8,
+          barThickness: 45
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }, 
+          tooltip: {
+            callbacks: {
+              label: (context) => `Total: S/ ${context.parsed.y.toFixed(2)}`
+            }
+          }
+        },
+        scales: {
+          y: { 
+            beginAtZero: true,
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            title: { display: true, text: 'Monto en Soles (S/)' }
+          },
+          x: { 
+            grid: { display: false } 
+          }
+        }
+      }
+    });
+  },
+
   renderRecientes(lista) {
     const tbody = document.getElementById("dashboardHerramientasRecientes");
+    if (!tbody) return;
 
-    if (!lista.length) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="6">
-            <div class="empty-state">
-              <i class="bi bi-tools"></i>
-              <p>No hay herramientas recientes</p>
-            </div>
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    tbody.innerHTML = lista.map(h => {
-      const estado = (h.nombre_estado || "").toLowerCase();
-      const status = (h.nombre_status || "").toLowerCase();
-
-      return `
-        <tr>
-          <td class="fw-600">${escapeHtml(h.nombre || "")}</td>
-
-          <td>
-            <span class="badge-marca-name">
-              ${escapeHtml(h.nombre_marca || "Sin marca")}
-            </span>
-          </td>
-
-          <td>${escapeHtml(h.serie || "")}</td>
-
-          <td>${escapeHtml(h.nombre_categoria || "")}</td>
-
-          <td>
-            <span class="badge-estado ${
-              estado.includes("bueno") || estado.includes("nueva")
-                ? "badge-bueno"
-                : "badge-danado"
-            }">
-              ${escapeHtml(h.nombre_estado || "")}
-            </span>
-          </td>
-
-          <td>
-            <span class="badge-status ${
-              status.includes("disponible")
-                ? "badge-disponible"
-                : "badge-prestado"
-            }">
-              ${escapeHtml(h.nombre_status || "")}
-            </span>
-          </td>
-        </tr>
-      `;
-    }).join("");
-  },
-};
+    tbody.innerHTML = lista.map(h => `
+      <tr>
+        <td class="fw-600">${escapeHtml(h.nombre || "")}</td>
+        <td><span class="badge-marca-name">${escapeHtml(h.nombre_marca || "---")}</span></td>
+        <td class="text-center">${escapeHtml(h.serie || "")}</td>
+        <td>${escapeHtml(h.nombre_categoria || "")}</td>
+        <td class="text-center">
+          <span class="badge-estado ${h.nombre_estado?.toLowerCase().includes('bueno') ? 'badge-bueno' : 'badge-danado'}">
+            ${escapeHtml(h.nombre_estado || "")}
+          </span>
+        </td>
+        <td class="text-center">
+          <span class="badge-status ${h.nombre_status?.toLowerCase().includes('disponible') ? 'badge-disponible' : 'badge-prestado'}">
+            ${escapeHtml(h.nombre_status || "")}
+          </span>
+        </td>
+      </tr>
+    `).join("");
+  }
+};s
