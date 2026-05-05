@@ -6,6 +6,7 @@ const AppState = {
   prestamos: [],
   usuarios: [],
   proveedores: [],
+  compras:[],
   deleteTarget: { type: null, id: null, name: null, onConfirm: null },
 };
 
