@@ -5,78 +5,65 @@
       <p class="page-subtitle">Resumen general del sistema de herramientas</p>
     </div>
   </div>
-
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-icon" style="--c: #6366f1">
-        <i class="bi bi-tools"></i>
-      </div>
+      <div class="stat-icon" style="--c: #6366f1"><i class="bi bi-tools"></i></div>
       <div class="stat-value" id="totalHerramientas">0</div>
       <div class="stat-label">Herramientas registradas</div>
     </div>
-
     <div class="stat-card">
-      <div class="stat-icon" style="--c: #10b981">
-        <i class="bi bi-check-circle"></i>
-      </div>
+      <div class="stat-icon" style="--c: #10b981"><i class="bi bi-check-circle"></i></div>
       <div class="stat-value" id="totalDisponibles">0</div>
       <div class="stat-label">Disponibles</div>
     </div>
-
     <div class="stat-card">
-      <div class="stat-icon" style="--c: #f59e0b">
-        <i class="bi bi-arrow-left-right"></i>
-      </div>
+      <div class="stat-icon" style="--c: #f59e0b"><i class="bi bi-arrow-left-right"></i></div>
       <div class="stat-value" id="totalPrestadas">0</div>
       <div class="stat-label">Prestadas</div>
     </div>
-
     <div class="stat-card">
-      <div class="stat-icon" style="--c: #ef4444">
-        <i class="bi bi-people"></i>
-      </div>
+      <div class="stat-icon" style="--c: #ef4444"><i class="bi bi-people"></i></div>
       <div class="stat-value" id="totalUsuarios">0</div>
       <div class="stat-label">Usuarios registrados</div>
     </div>
-
     <div class="stat-card">
-      <div class="stat-icon" style="--c: #0ea5e9">
-        <i class="bi bi-truck"></i>
-      </div>
+      <div class="stat-icon" style="--c: #0ea5e9"><i class="bi bi-truck"></i></div>
       <div class="stat-value" id="totalProveedores">0</div>
       <div class="stat-label">Proveedores</div>
     </div>
-
     <div class="stat-card">
-      <div class="stat-icon" style="--c: #8b5cf6">
-        <i class="bi bi-cart"></i>
-      </div>
+      <div class="stat-icon" style="--c: #8b5cf6"><i class="bi bi-cart"></i></div>
       <div class="stat-value" id="totalCompras">0</div>
       <div class="stat-label">Compras</div>
     </div>
-
     <div class="stat-card">
-      <div class="stat-icon" style="--c: #f97316">
-        <i class="bi bi-clock"></i>
-      </div>
+      <div class="stat-icon" style="--c: #f97316"><i class="bi bi-clock"></i></div>
       <div class="stat-value" id="prestamosActivos">0</div>
       <div class="stat-label">Préstamos activos</div>
     </div>
-
     <div class="stat-card">
-      <div class="stat-icon" style="--c: #dc2626">
-        <i class="bi bi-exclamation-triangle"></i>
-      </div>
+      <div class="stat-icon" style="--c: #dc2626"><i class="bi bi-exclamation-triangle"></i></div>
       <div class="stat-value" id="prestamosVencidos">0</div>
       <div class="stat-label">Vencidos</div>
     </div>
   </div>
 
-  <div class="card-panel table-panel">
+<div class="card-panel" style="margin-top: 1.5rem;">
+  <div class="panel-header">
+    <div class="panel-title">
+      <i class="bi bi-Shield-exclamation me-2"></i>
+      Barras de compras por empresa
+    </div>
+  </div>
+  <div style="height: 350px; padding: 1rem;">
+    <canvas id="chartPrincipal"></canvas>
+  </div>
+</div>
+
+  <div class="card-panel table-panel" style="margin-top: 1.5rem;">
     <div class="panel-header">
       <div class="panel-title">Herramientas recientes</div>
     </div>
-
     <table class="table-custom dashboard-table">
       <thead>
         <tr>
@@ -88,7 +75,6 @@
           <th class="text-center">Status</th>
         </tr>
       </thead>
-
       <tbody id="dashboardHerramientasRecientes"></tbody>
     </table>
   </div>
