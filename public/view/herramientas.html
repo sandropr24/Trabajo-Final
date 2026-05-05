@@ -7,10 +7,17 @@
       </p>
     </div>
 
-    <button class="btn-primary-action" id="btnNuevaHerramienta">
-      <i class="bi bi-plus-lg"></i>
-      Nueva herramienta
-    </button>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-primary-action" id="btnNuevaHerramienta">
+        <i class="bi bi-plus-lg"></i>
+        Nueva herramienta
+      </button>
+
+      <button class="btn-primary-action" onclick="HerramientasModule.verReporte()">
+        <i class="bi bi-file-earmark-pdf"></i>
+        Ver Reporte
+      </button>
+    </div>
   </div>
 
   <div class="search-bar-row">
@@ -50,6 +57,31 @@
   </div>
 </section>
 
+<div class="modal-overlay" id="modalReporteOverlay">
+  <div class="modal-panel" style="width: 90%; max-width: 1100px; height: 85vh;">
+    <div class="modal-header-custom">
+      <div>
+        <div class="modal-title-custom">Reporte de Herramientas</div>
+        <div class="modal-subtitle">Vista previa del reporte PDF</div>
+      </div>
+
+      <button class="btn-modal-close" onclick="HerramientasModule.cerrarReporte()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div style="height: calc(85vh - 85px); padding: 12px;">
+      <iframe
+        id="pdfFrame"
+        src=""
+        width="100%"
+        height="100%"
+        style="border:none; border-radius:12px;">
+      </iframe>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modalHerramientaOverlay">
   <div class="modal-panel">
     <div class="modal-header-custom">
@@ -57,9 +89,7 @@
         <div class="modal-title-custom" id="modalHerramientaTitle">
           Nueva Herramienta
         </div>
-        <div class="modal-subtitle">
-          Completa los datos de la herramienta
-        </div>
+        <div class="modal-subtitle">Completa los datos de la herramienta</div>
       </div>
 
       <button id="btnCloseModalHerramienta" class="btn-modal-close">
@@ -128,9 +158,7 @@
     </div>
 
     <div class="modal-footer-custom">
-      <button id="btnCancelHerramienta" class="btn-cancel">
-        Cancelar
-      </button>
+      <button id="btnCancelHerramienta" class="btn-cancel">Cancelar</button>
 
       <button id="btnSaveHerramienta" class="btn-save">
         <span id="btnSaveHerramientaText">Guardar</span>
