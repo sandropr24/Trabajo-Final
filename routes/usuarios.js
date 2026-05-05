@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
+const bcrypt = require('bcrypt');
 
-// GET - Obtener todos los usuarios
 router.get('/', async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -30,7 +30,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET - Obtener usuario por ID
 router.get('/:id', async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -66,7 +65,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST - Crear usuario
 router.post('/', async (req, res) => {
   const { nombres_completos, dni, turno, estado, correo, contraseña, id_rol } = req.body;
 
@@ -83,6 +81,11 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    // 🔥 ENCRIPTAR CONTRASEÑA
+    const passwordHash = contraseña
+      ? await bcrypt.hash(contraseña, 10)
+      : null;
+
     const [result] = await db.query(
       `INSERT INTO usuarios 
       (nombres_completos, dni, turno, estado, correo, contraseña)
@@ -93,7 +96,7 @@ router.post('/', async (req, res) => {
         turno,
         estado || 'vigente',
         correo || null,
-        contraseña || null
+        passwordHash
       ]
     );
 
@@ -118,7 +121,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT - Actualizar usuario
 router.put('/:id', async (req, res) => {
   const { nombres_completos, dni, turno, estado, correo, contraseña, id_rol } = req.body;
 
@@ -135,20 +137,29 @@ router.put('/:id', async (req, res) => {
   }
 
   try {
-    const [result] = await db.query(
-      `UPDATE usuarios 
-       SET nombres_completos = ?, dni = ?, turno = ?, estado = ?, correo = ?, contraseña = ?
-       WHERE id_usuario = ?`,
-      [
-        nombres_completos.trim(),
-        dni.trim(),
-        turno,
-        estado || 'vigente',
-        correo || null,
-        contraseña || null,
-        req.params.id
-      ]
-    );
+    let query = `
+      UPDATE usuarios 
+      SET nombres_completos = ?, dni = ?, turno = ?, estado = ?, correo = ?
+    `;
+
+    const params = [
+      nombres_completos.trim(),
+      dni.trim(),
+      turno,
+      estado || 'vigente',
+      correo || null
+    ];
+
+    if (contraseña && contraseña.trim() !== '') {
+      const passwordHash = await bcrypt.hash(contraseña, 10);
+      query += `, contraseña = ?`;
+      params.push(passwordHash);
+    }
+
+    query += ` WHERE id_usuario = ?`;
+    params.push(req.params.id);
+
+    const [result] = await db.query(query, params);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
@@ -178,7 +189,6 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE - Eliminar usuario
 router.delete('/:id', async (req, res) => {
   try {
     const [prestamos] = await db.query(
