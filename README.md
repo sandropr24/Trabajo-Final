@@ -2,8 +2,20 @@
 
 ## Descripción
 
-ToolControl es una aplicación web desarrollada para la gestión de herramientas, control de préstamos y administración de usuarios. El sistema permite registrar herramientas, gestionar su disponibilidad, controlar préstamos y visualizar información mediante un panel administrativo.
-El proyecto ha sido desarrollado como trabajo final académico, siguiendo una estructura modular que separa frontend, backend y base de datos.
+ToolControl es una aplicación web desarrollada para la gestión integral de herramientas, permitiendo controlar préstamos, devoluciones, inventario y usuarios dentro de un entorno organizacional.
+
+El sistema digitaliza procesos manuales, mejora la trazabilidad de los recursos, reduce pérdidas y optimiza la administración de herramientas en talleres o almacenes.
+
+Este proyecto ha sido desarrollado como trabajo final académico, implementando una arquitectura modular que separa frontend, backend y base de datos.
+
+---
+
+## Tecnologías utilizadas
+
+- Node.js
+- Express
+- MySQL
+- HTML, CSS y JavaScript
 
 ---
 
@@ -11,33 +23,58 @@ El proyecto ha sido desarrollado como trabajo final académico, siguiendo una es
 
 Código fuente disponible en:
 
-GitHub
 https://github.com/sandropr24/Trabajo-Final.git
 
 ---
 
 ## Autores
 
-* Sandro Romani Pachas
-* Yuliana Solari Oporto
+- Yuliana Milagros Solari Oporto
+- Sandro Romani Pachas
 
-Trabajo desarrollado de forma colaborativa.
+Proyecto desarrollado de forma colaborativa mediante control de versiones.
 
 ---
 
 ## Requisitos
 
-* Node.js
-* xampp
-* MySQL 
-* Navegador web 
+Antes de ejecutar el sistema, asegúrese de contar con:
+
+- Node.js
+- XAMPP
+- MySQL
+- Navegador web 
 
 ---
 
 ## Instalación
-## (Pasos para poder crear el repositorio sin error de credenciales)
 
-Mofidicar el db.js 
+### 1. Clonar el repositorio
+
+git clone https://github.com/sandropr24/Trabajo-Final.git
+cd Trabajo-Final
+
+### 2. Instalar dependencias
+npm install
+### 3. Configuración de variables de entorno
+
+Crear un archivo .env en la raíz del proyecto:
+
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=prestamo_herramientas
+DB_PORT=3306
+ ### 4. Configuración de la base de datos
+
+Ejecutar en MySQL:
+
+CREATE DATABASE prestamo_herramientas;
+
+Importar el archivo:
+
+prestamo_db.sql
+ ### 5. Configuración de conexión (db.js)
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -48,127 +85,43 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 50,
   timezone: "-05:00",
-}); 
-
-Modificar el .env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=
-DB_NAME=prestamo_herramientas
-DB_PORT=3306
-### Backend
-
-
-### 1. Clonar el repositorio
-
-```bash
-git clone https://github.com/sandropr24/Trabajo-Final.git
-cd Trabajo-Final
-```
-
----
-
-### 2. Instalar dependencias
-
-```bash
-npm install
-```
-
----
-
-### 3. Configuración de variables de entorno
-
-Crear un archivo `.env` en la raíz del proyecto:
-
-```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=
-DB_NAME=prestamo_herramientas
-DB_PORT=3306
-```
-
-### 4. Configuración de la base de datos
-
-1. Crear la base de datos:
-
-```sql
-CREATE DATABASE prestamo_herramientas;
-```
-
-2. Importar el archivo `prestamo_db.sql` en el gestor de base de datos.
-
----
-
-## Ejecución del sistema
-
-```bash
+});
+### Ejecución del sistema
 node server.js
-```
+### Acceso al sistema
+Login:
+http://localhost:3000/
+Dashboard:
+http://localhost:3000/index.html
+API:
+http://localhost:3000/api
+### Funcionalidades
+Autenticación de usuarios
+Gestión de usuarios
+Gestión de herramientas
+Control de préstamos y devoluciones
+Dashboard con estadísticas
+Navegación tipo SPA
+API REST
+Conexión a base de datos mediante pool
+### Flujo de uso
+El usuario accede al sistema mediante login.
+Ingresa sus credenciales.
+El sistema valida la información.
+Se habilita el acceso al dashboard.
+El usuario gestiona herramientas y préstamos.
+Consideraciones técnicas
+Implementar autenticación con JWT
+Validar datos en backend
+Aplicar restricciones en base de datos
+Organizar el proyecto bajo patrón MVC
 
----
+### Buenas prácticas
+Uso de variables de entorno
+Código modular
+Separación de responsabilidades
+Control de versiones con GitHub
+Uso de pool de conexiones
+### Estado del proyecto:
 
-## Acceso al sistema
-
-* Login:
-  http://localhost:3000/
-
-* Dashboard:
-  http://localhost:3000/index.html
-
-* API base:
-  http://localhost:3000/api
-
----
-
-## Funcionalidades actuales
-
-* Autenticación básica de usuarios
-* Interfaz de login
-* Dashboard con navegación dinámica (SPA)
-* Visualización de herramientas
-* API REST estructurada
-* Conexión a base de datos mediante pool
-
----
-
-## Flujo de uso
-
-1. El usuario accede a la página de inicio de sesión
-2. Ingresa correo y contraseña
-3. El sistema valida las credenciales
-4. Se permite el acceso al panel principal
-5. El usuario navega entre módulos disponibles
-
----
-
-## Consideraciones técnicas
-
-* Se recomienda implementar autenticación con JWT
-* Validar datos en backend para evitar errores y vulnerabilidades
-* Ajustar restricciones (constraints) en la base de datos
-
----
-
-## Mejoras pendientes
-
-* Protección de rutas privadas
-* CRUD completo de Usuarios
-* Manejo de errores estructurado
-
----
-
-## Buenas prácticas
-
-* Separar lógica en controladores
-* Usar middlewares para autenticación
-* Mantener código modular
-* Utilizar variables de entorno
-* Documentar el código
-
----
-
-## Estado del proyecto
-
-Proyecto en desarrollo con funcionalidades base implementadas.
-
+En desarrollo avanzado, con funcionalidades principales implementadas y en mejora continua.
