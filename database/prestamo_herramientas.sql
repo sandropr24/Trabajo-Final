@@ -136,9 +136,9 @@ INSERT INTO usuario_rol (id_usuario, id_rol) VALUES
 INSERT INTO categorias (nombre_categoria) VALUES 
 ('Herramientas eléctricas'),
 ('Herramientas manuales'),
-('Jardinería'),
+('Medición'),
 ('Construcción'),
-('Medición');
+('Jardinería');
 
 INSERT INTO estado_herramienta (nombre_estado) VALUES 
 ('Nueva'),
