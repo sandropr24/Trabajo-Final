@@ -1091,9 +1091,17 @@ a { text-decoration: none; color: inherit; }
   background: rgba(16, 185, 129, 0.12);
   color: #047857;
 }
+.badge-prestado,
+.badge-enuso, 
+.badge-reservado {
+  background: rgb(255, 240, 102); 
+  color: #434a00; 
+}
 
 .badge-danado,
-.badge-prestado {
+.badge-defectuosa, 
+.badge-debaja,
+.badge-nodisponible {
   background: rgba(239, 68, 68, 0.12);
   color: #b91c1c;
 }
