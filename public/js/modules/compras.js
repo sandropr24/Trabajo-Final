@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 function formatDate(fecha) {
   if (!fecha) return "";
@@ -6,7 +6,7 @@ function formatDate(fecha) {
   return new Date(fecha).toLocaleDateString("es-PE", {
     year: "numeric",
     month: "2-digit",
-    day: "2-digit"
+    day: "2-digit",
   });
 }
 
@@ -56,7 +56,9 @@ const ComprasModule = {
       return;
     }
 
-    tbody.innerHTML = lista.map((c, i) => `
+    tbody.innerHTML = lista
+      .map(
+        (c, i) => `
   <tr>
     <td class="text-center">${String(i + 1).padStart(2, "0")}</td>
 
@@ -70,7 +72,7 @@ const ComprasModule = {
 
     <td class="text-center">
       <span class="badge-total">
-        S/ ${Number(c.total || 0).toFixed(2)}
+        S/ ${(Number(c.total || 0) * 1.18).toFixed(2)}
       </span>
     </td>
 
@@ -84,13 +86,18 @@ const ComprasModule = {
       </div>
     </td>
   </tr>
-`).join("");
+`,
+      )
+      .join("");
   },
 
   async openModal() {
-    document.getElementById("cProveedor").innerHTML = `<option>Cargando...</option>`;
-    document.getElementById("cUsuario").innerHTML = `<option>Cargando...</option>`;
-    document.getElementById("cHerramienta").innerHTML = `<option>Cargando...</option>`;
+    document.getElementById("cProveedor").innerHTML =
+      `<option>Cargando...</option>`;
+    document.getElementById("cUsuario").innerHTML =
+      `<option>Cargando...</option>`;
+    document.getElementById("cHerramienta").innerHTML =
+      `<option>Cargando...</option>`;
 
     openOverlay("modalCompraOverlay");
 
@@ -101,31 +108,42 @@ const ComprasModule = {
 
       document.getElementById("cProveedor").innerHTML = `
         <option value="">Seleccione proveedor</option>
-        ${proveedores.map(p => `
+        ${proveedores
+          .map(
+            (p) => `
           <option value="${p.id_proveedor}">
             ${escapeHtml(p.nombre)}
           </option>
-        `).join("")}
+        `,
+          )
+          .join("")}
       `;
 
       document.getElementById("cUsuario").innerHTML = `
         <option value="">Seleccione usuario</option>
-        ${usuarios.map(u => `
+        ${usuarios
+          .map(
+            (u) => `
           <option value="${u.id_usuario}">
             ${escapeHtml(u.nombres_completos)}
           </option>
-        `).join("")}
+        `,
+          )
+          .join("")}
       `;
 
       document.getElementById("cHerramienta").innerHTML = `
         <option value="">Seleccione herramienta</option>
-        ${herramientas.map(h => `
+        ${herramientas
+          .map(
+            (h) => `
           <option value="${h.id_herramienta}">
             ${escapeHtml(h.nombre)}
           </option>
-        `).join("")}
+        `,
+          )
+          .join("")}
       `;
-
     } catch (error) {
       showToast("Error cargando datos", "error");
     }
@@ -136,34 +154,63 @@ const ComprasModule = {
     const id_usuario = document.getElementById("cUsuario").value;
     const fecha_compra = document.getElementById("cFechaCompra").value;
     const id_herramienta = document.getElementById("cHerramienta").value;
+
     const cantidad = Number(document.getElementById("cCantidad").value);
     const precio = Number(document.getElementById("cPrecio").value);
 
-    if (!id_proveedor) return showToast("Selecciona proveedor", "error");
-    if (!id_usuario) return showToast("Selecciona usuario", "error");
-    if (!fecha_compra) return showToast("Selecciona fecha", "error");
-    if (!id_herramienta) return showToast("Selecciona herramienta", "error");
-    if (!cantidad || cantidad <= 0) return showToast("Cantidad inválida", "error");
+    if (!id_proveedor) {
+      return showToast("Selecciona proveedor", "error");
+    }
+
+    if (!id_usuario) {
+      return showToast("Selecciona usuario", "error");
+    }
+
+    if (!fecha_compra) {
+      return showToast("Selecciona fecha", "error");
+    }
+
+    if (!id_herramienta) {
+      return showToast("Selecciona herramienta", "error");
+    }
+
+    if (!cantidad || cantidad <= 0) {
+      return showToast("Cantidad inválida", "error");
+    }
+
+    if (!precio || precio <= 0) {
+      return showToast("Precio inválido", "error");
+    }
+    const subtotal = cantidad * precio;
+
+    const igv = subtotal * 0.18;
+
+    const total = subtotal + igv;
 
     try {
       await http("/api/compras", "POST", {
         id_proveedor,
         id_usuario,
         fecha_compra,
+
         herramientas: [
           {
             id_herramienta,
             cantidad,
-            precio
-          }
-        ]
+            precio,
+            subtotal,
+          },
+        ],
+
+        igv,
+        total,
       });
 
       showToast("Compra registrada correctamente", "success");
 
       closeOverlay("modalCompraOverlay");
-      await this.load();
 
+      await this.load();
     } catch (error) {
       showToast(error.message, "error");
     }
@@ -176,33 +223,41 @@ const ComprasModule = {
       setText("detalleCompraTitle", `Compra #${data.id_compra}`);
 
       document.getElementById("detalleCompraBody").innerHTML = `
-        <div class="detalle-grid">
-          <div>
-            <span class="detalle-label">Proveedor</span>
-            <strong>${escapeHtml(data.proveedor || "")}</strong>
-          </div>
+      
+      <div class="detalle-grid">
 
-          <div>
-            <span class="detalle-label">Usuario</span>
-            <strong>${escapeHtml(data.usuario || "")}</strong>
-          </div>
-
-          <div>
-            <span class="detalle-label">Fecha</span>
-            <strong>${formatDate(data.fecha_compra)}</strong>
-          </div>
+        <div>
+          <span class="detalle-label">Proveedor</span>
+          <strong>${escapeHtml(data.proveedor || "")}</strong>
         </div>
 
-        <hr>
+        <div>
+          <span class="detalle-label">Usuario</span>
+          <strong>${escapeHtml(data.usuario || "")}</strong>
+        </div>
 
-        ${(data.detalle || []).map(d => `
+        <div>
+          <span class="detalle-label">Fecha</span>
+          <strong>${formatDate(data.fecha_compra)}</strong>
+        </div>
+
+      </div>
+
+      <hr>
+
+      ${(data.detalle || [])
+        .map(
+          (d) => `
+
           <div class="detalle-item">
+
             <div class="detalle-item-title">
               <i class="bi bi-tools"></i>
               ${escapeHtml(d.nombre)}
             </div>
 
             <div class="detalle-grid">
+
               <div>
                 <span class="detalle-label">Cantidad</span>
                 <strong>${d.cantidad}</strong>
@@ -210,45 +265,73 @@ const ComprasModule = {
 
               <div>
                 <span class="detalle-label">Precio</span>
-                <strong>S/ ${d.precio}</strong>
+                <strong>S/ ${Number(d.precio).toFixed(2)}</strong>
               </div>
 
               <div>
                 <span class="detalle-label">Subtotal</span>
-                <strong>S/ ${d.subtotal}</strong>
+                <strong>S/ ${Number(d.subtotal).toFixed(2)}</strong>
               </div>
+
+              <div>
+                <span class="detalle-label">IGV (18%)</span>
+                <strong>
+                  S/ ${(Number(d.subtotal) * 0.18).toFixed(2)}
+                </strong>
+              </div>
+
+              <div>
+                <span class="detalle-label">Total</span>
+                <strong>
+                  S/ ${(Number(d.subtotal) * 1.18).toFixed(2)}
+                </strong>
+              </div>
+
             </div>
+
           </div>
-        `).join("")}
-      `;
+
+        `,
+        )
+        .join("")}
+    `;
 
       openOverlay("modalDetalleCompraOverlay");
-
     } catch (error) {
       showToast("Error al cargar detalle", "error");
     }
   },
-
   _bindEvents() {
-    document.getElementById("btnNuevaCompra")
+    document
+      .getElementById("btnNuevaCompra")
       ?.addEventListener("click", () => this.openModal());
 
-    document.getElementById("btnSaveCompra")
+    document
+      .getElementById("btnSaveCompra")
       ?.addEventListener("click", () => this.save());
 
-    document.getElementById("btnCancelCompra")
+    document
+      .getElementById("btnCancelCompra")
       ?.addEventListener("click", () => closeOverlay("modalCompraOverlay"));
 
-    document.getElementById("btnCloseModalCompra")
+    document
+      .getElementById("btnCloseModalCompra")
       ?.addEventListener("click", () => closeOverlay("modalCompraOverlay"));
 
-    document.getElementById("btnRefreshCompras")
+    document
+      .getElementById("btnRefreshCompras")
       ?.addEventListener("click", () => this.load());
 
-    document.getElementById("btnCloseDetalleCompra")
-      ?.addEventListener("click", () => closeOverlay("modalDetalleCompraOverlay"));
+    document
+      .getElementById("btnCloseDetalleCompra")
+      ?.addEventListener("click", () =>
+        closeOverlay("modalDetalleCompraOverlay"),
+      );
 
-    document.getElementById("btnCerrarDetalleCompra")
-      ?.addEventListener("click", () => closeOverlay("modalDetalleCompraOverlay"));
-  }
+    document
+      .getElementById("btnCerrarDetalleCompra")
+      ?.addEventListener("click", () =>
+        closeOverlay("modalDetalleCompraOverlay"),
+      );
+  },
 };
