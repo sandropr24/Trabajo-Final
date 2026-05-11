@@ -76,12 +76,15 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ success: false, message: 'El DNI es requerido' });
   }
 
+  if (!/^\d{8}$/.test(dni.trim())) {
+    return res.status(400).json({ success: false, message: 'El DNI debe tener exactamente 8 números' });
+  }
+
   if (!turno || !['mañana', 'tarde', 'noche'].includes(turno)) {
     return res.status(400).json({ success: false, message: 'El turno debe ser mañana, tarde o noche' });
   }
 
   try {
-    // 🔥 ENCRIPTAR CONTRASEÑA
     const passwordHash = contraseña
       ? await bcrypt.hash(contraseña, 10)
       : null;

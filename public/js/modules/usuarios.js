@@ -256,6 +256,9 @@ const UsuariosModule = {
     if (!document.getElementById("uDni").value.trim()) {
       setError("uDni", "err-uDni", "El DNI es requerido");
       ok = false;
+    } else if (!/^\d{8}$/.test(document.getElementById("uDni").value.trim())) {
+      setError("uDni", "err-uDni", "El DNI debe tener exactamente 8 números");
+      ok = false;
     }
 
     if (!document.getElementById("uTurno").value) {

@@ -76,7 +76,8 @@
       <label class="form-label-custom">
         DNI <span class="required">*</span>
       </label>
-      <input type="text" id="uDni" class="input-custom" />
+      <input type="text" id="uDni" class="input-custom" maxlength="8" inputmode="numeric"
+      oninput="this.value = this.value.replace(/\D/g, '')"/>
       <div id="err-uDni" class="field-error"></div>
 
       <label class="form-label-custom">
