@@ -30,36 +30,38 @@
   </div>
 
   <div class="card-panel table-panel">
-  <table class="table-custom proveedores-table">
-    <colgroup>
-      <col style="width: 70px" />
-      <col style="width: 32%" />
-      <col style="width: 28%" />
-      <col style="width: 18%" />
-      <col style="width: 130px" />
-    </colgroup>
+    <table class="table-custom proveedores-table">
+      <colgroup>
+        <col style="width: 70px" />
+        <col style="width: 32%" />
+        <col style="width: 28%" />
+        <col style="width: 18%" />
+        <col style="width: 130px" />
+      </colgroup>
 
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Proveedor</th>
-        <th>Contacto</th>
-        <th>Teléfono</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Proveedor</th>
+          <th>Contacto</th>
+          <th>Teléfono</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
 
-    <tbody id="bodyProveedores"></tbody>
-  </table>
-</div>
+      <tbody id="bodyProveedores"></tbody>
+    </table>
+  </div>
 </section>
 
 <div class="modal-overlay" id="modalProveedorOverlay">
   <div class="modal-panel">
     <div class="modal-header-custom">
       <div>
-        <div class="modal-title-custom">Nuevo proveedor</div>
-        <div class="modal-subtitle">Registrar proveedor</div>
+        <div class="modal-title-custom" id="modalProveedorTitle">
+          Nuevo Proveedor
+        </div>
+        <div class="modal-subtitle">Completa los datos del proveedor</div>
       </div>
 
       <button id="btnCloseModalProveedor" class="btn-modal-close">
@@ -70,19 +72,30 @@
     <div class="modal-body-custom">
       <input type="hidden" id="proveedorId" />
 
-      <label class="form-label-custom">Nombre</label>
-      <input type="text" id="pNombre" class="input-custom" />
+      <label class="form-label-custom">
+        Nombre <span class="required">*</span>
+      </label>
+      <input type="text" id="pNombre" class="input-custom" placeholder="Nombre del proveedor" />
+      <div id="err-pNombre" class="field-error"></div>
 
       <label class="form-label-custom">Contacto</label>
-      <input type="text" id="pContacto" class="input-custom" />
+      <input type="text" id="pContacto" class="input-custom" placeholder="Nombre del contacto" />
+      <div id="err-pContacto" class="field-error"></div>
 
       <label class="form-label-custom">Teléfono</label>
-      <input type="text" id="pTelefono" class="input-custom" />
+      <input type="text" id="pTelefono" class="input-custom" placeholder="Ej: 987654321"
+        maxlength="9" inputmode="numeric"
+        oninput="this.value = this.value.replace(/\D/g, '')" />
+      <div id="err-pTelefono" class="field-error"></div>
     </div>
 
     <div class="modal-footer-custom">
       <button id="btnCancelProveedor" class="btn-cancel">Cancelar</button>
-      <button id="btnSaveProveedor" class="btn-save">Guardar</button>
+
+      <button id="btnSaveProveedor" class="btn-save">
+        <span id="btnSaveProveedorText">Guardar</span>
+        <span id="btnSaveProveedorSpinner" class="spinner-sm d-none"></span>
+      </button>
     </div>
   </div>
 </div>

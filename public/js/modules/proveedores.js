@@ -107,22 +107,14 @@ const ProveedoresModule = {
       return showToast("El nombre del proveedor es obligatorio", "error");
     }
 
+    setLoading("btnSaveProveedor", "btnSaveProveedorText", "btnSaveProveedorSpinner", true);
+
     try {
       if (id) {
-        await http(`/api/proveedores/${id}`, "PUT", {
-          nombre,
-          contacto,
-          telefono,
-        });
-
+        await http(`/api/proveedores/${id}`, "PUT", { nombre, contacto, telefono });
         showToast("Proveedor actualizado correctamente", "success");
       } else {
-        await http("/api/proveedores", "POST", {
-          nombre,
-          contacto,
-          telefono,
-        });
-
+        await http("/api/proveedores", "POST", { nombre, contacto, telefono });
         showToast("Proveedor registrado correctamente", "success");
       }
 
@@ -130,9 +122,11 @@ const ProveedoresModule = {
       await this.load();
     } catch (error) {
       showToast(error.message, "error");
+    } finally {
+      setLoading("btnSaveProveedor", "btnSaveProveedorText", "btnSaveProveedorSpinner", false);
     }
   },
-
+  
   async confirmDel(id) {
     const result = await Swal.fire({
       title: "¿Eliminar proveedor?",
