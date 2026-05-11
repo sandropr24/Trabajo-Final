@@ -31,18 +31,42 @@ const ROUTES = {
     module: () => MarcasModule,
   },
 
-  proveedores:{
+  proveedores: {
     title: "Proveedores",
     view: "view/proveedores.html",
-    module: ()=> ProveedoresModule,
+    module: () => ProveedoresModule,
   },
 
   compras: {
-  title: "Compras",
-  view: "view/compras.html",
-  module: () => ComprasModule,
+    title: "Compras",
+    view: "view/compras.html",
+    module: () => ComprasModule,
   },
 };
+
+async function precargarDatos() {
+  try {
+    const [herramientas, usuarios, prestamos, marcas, proveedores, compras] = await Promise.all([
+      http("/api/herramientas"),
+      http("/api/usuarios"),
+      http("/api/prestamos"),
+      http("/api/marcas"),
+      http("/api/proveedores"),
+      http("/api/compras"),
+    ]);
+
+    AppState.herramientas = herramientas.data;
+    AppState.usuarios = usuarios.data;
+    AppState.prestamos = prestamos.data;
+    AppState.marcas = marcas.data;
+    AppState.proveedores = proveedores.data;
+    AppState.compras = compras.data;
+
+    updateBadges();
+  } catch (error) {
+    console.error("Error precargando datos:", error.message);
+  }
+}
 
 async function navigate(page) {
   const items = document.querySelectorAll(".nav-item");
@@ -101,4 +125,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   navigate("dashboard");
+  precargarDatos();
 });

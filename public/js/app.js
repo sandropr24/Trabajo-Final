@@ -58,6 +58,8 @@ function updateBadges() {
   setText("badge-prestamos", AppState.prestamos.length);
   setText("badge-dashboard", AppState.herramientas.length);
   setText("badge-marcas", AppState.marcas.length);
+  setText("badge-proveedores", AppState.proveedores.length);
+  setText("badge-compras", AppState.compras.length);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
