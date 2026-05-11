@@ -1588,3 +1588,7 @@ a { text-decoration: none; color: inherit; }
 .proveedores-table td {
   padding: 10px 12px;
 }
+
+.d-none {
+  display: none !important;
+}
